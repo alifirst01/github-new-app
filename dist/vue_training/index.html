@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Vue Practice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="theme.css">
+  </head>
+  <body>
+    <div id="newapp">
+        <ul v-bind:style="styleObject">  
+          {{searchText}}
+          <br/>
+          <custom-input v-model="searchText"></custom-input>
+          <todoitem v-for="(todo, index) in todos"
+                    v-bind:task="todo"
+                    v-model="todo.done"
+                    v-bind:alltrue = "allTrue"
+                    v-on:checktasks="checkAllTasks"
+                    v-on:unchecktasks="unCheckAllTasks"
+                    v-on:remove="todos.splice(index, 1)"
+                    v-bind:key="todo.id">
+          </todoitem>
+          <button v-on:click="addNewProperty">
+            Add Price property
+          </button>
+          <br />
+          <br />
+          
+        </ul>
+        <h1>Vue Form</h1>
+        <custom-form></custom-form> 
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.18/vue.min.js"></script>
+    <script src="script.js"></script>
+    <script src="components/custom-form.js"></script>
+    <script src="components/custom-input.js"></script>
+    <script src="components/todoitem.js"></script>
+  </body>
+</html>
+
