@@ -1,5 +1,32 @@
+nav ul li {
+  font-size: 10px;
+  font-weight: bold;
+}
+
 body {
-  background-color: green;
+  font: 100% Helvetica, sans-serif;
+}
+
+nav ul {
+  width: 100%;
+}
+nav ul li {
+  display: inline;
+  padding: 10px;
+  border: 3px solid grey;
+  list-style-type: none;
+}
+
+#a1 {
+  background-color: lightgrey;
+  border-color: grey;
+  color: black;
+}
+
+#a2 {
+  background-color: lightgrey;
+  border-color: black;
+  color: red;
 }
 
 /*# sourceMappingURL=theme.css.map */
