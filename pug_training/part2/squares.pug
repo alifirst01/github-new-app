@@ -1,0 +1,21 @@
+mixin square
+    div.w4.h4-ns.ba.bw2.b--dark-red.bg-moon-gray
+
+mixin listOfSquares(n)
+    - var i = 0
+    ul.list.tc.pt2
+        while i < n
+            li.mr3.dib.relative
+                +square
+            - i++ 
+html
+    head
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        link(rel='stylesheet', href='https://unpkg.com/tachyons/css/tachyons.min.css')
+        title Squares
+
+    body
+        div.mt5
+            +listOfSquares(1)
+            +listOfSquares(2)
+            +listOfSquares(3)        
