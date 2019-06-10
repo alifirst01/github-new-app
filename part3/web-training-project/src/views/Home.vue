@@ -27,35 +27,7 @@ var axiosPokemonCall = (endPoint:string) => {
     console.log('Error: ', error);
   });
 }
-
-var githubTrendingAPI = async () => {
-  console.log('Github API Call');
-  var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-
-  var url = 'https://api.github.com/search/repositories';
-  await axios.get(url, {
-    params: {
-      'q': 'typescript',
-      'sort': 'stars',
-      'order': 'desc',
-      'pushed': yesterday + '..*',
-    }
-  })
-  .then(function (response) {
-    console.log('Github API Call');
-    console.log('Response: ', response);
-    var outdatedResults = response.data.items.filter(item => {
-      return new Date(item.updated_at) < yesterday;
-    });
-    console.log('Outdated Results', outdatedResults);
-  })
-  .catch(function (error) {
-    console.log('Error: ', error);
-  });
-}
-
 axiosPokemonCall('type/3/');
-githubTrendingAPI();
 
 @Component({
   components: {
