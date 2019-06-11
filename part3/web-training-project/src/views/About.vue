@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(class="about")
+  .about
     h1 This is an about page
     HelloWorld(msg="This is the helloWorld component being used in About component")
 </template>

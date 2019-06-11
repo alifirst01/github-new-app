@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(class="home")
+  .home
     h1 h1 Some text
     h2 h2 Some text
     .bg-dark
@@ -23,6 +23,7 @@ import axios from 'axios';
   }
 })
 export default class Home extends Vue {
+
   axiosPokemonCall(endPoint:string) {
     console.log('Pokemon API Call');
     var url = 'https://pokeapi.co/api/v2/' + endPoint;
