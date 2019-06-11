@@ -4,7 +4,7 @@
             a(v-bind:href="repo.html_url").link.blue {{repo.full_name}}
         p {{repo.description}}
         p.f7 Stars Count: {{repo.stargazers_count}}
-            hr    
+        hr    
 </template>
 
 <script lang="ts">

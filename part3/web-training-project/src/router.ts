@@ -24,7 +24,10 @@ export default new Router({
       path: "/trending",
       name: "trending",
       component: () =>
-        import(/* webpackChunkName: "trending" */ "./views/Trending.vue")
+        import(/* webpackChunkName: "trending" */ "./views/Trending.vue"),
+      props: {
+        name: "trendingRepos",
+      }
     }
   ]
 });

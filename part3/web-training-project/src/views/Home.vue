@@ -16,24 +16,27 @@ import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 import VueLogo from "@/components/VueLogo.vue"
 import axios from 'axios';
 
-var axiosPokemonCall = (endPoint:string) => {
-  console.log('Pokemon API Call');
-  var url = 'https://pokeapi.co/api/v2/' + endPoint;
-  axios.get(url).then(response => {
-    console.log('Status: ', response.status);
-    console.log('Data: ', response.data);
-  }).catch(error => {
-    console.log('Could not fetch the resource');
-    console.log('Error: ', error);
-  });
-}
-axiosPokemonCall('type/3/');
-
 @Component({
   components: {
     HelloWorld,
     VueLogo
   }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  axiosPokemonCall(endPoint:string) {
+    console.log('Pokemon API Call');
+    var url = 'https://pokeapi.co/api/v2/' + endPoint;
+    axios.get(url).then(response => {
+      console.log('Status: ', response.status);
+      console.log('Data: ', response.data);
+    }).catch(error => {
+      console.log('Could not fetch the resource');
+      console.log('Error: ', error);
+    });
+  }
+
+  mounted() {
+    this.axiosPokemonCall('type/3/');
+  }
+}
 </script>
