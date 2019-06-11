@@ -44,15 +44,14 @@ export default class Trending extends Vue{
 
     created() {
         this.timer = setInterval(this.updateTimeDiff, 65000);
-        this.updateTimeDiff();
     }
 
     beforeDestroy() {
         clearInterval(this.timer)
     }
 
-    @Watch('lastUpdated')
-    updateTimeDiff()
+    @Watch('lastUpdated', { immediate: true })
+    onChange(val, oldVal){ this.updateTimeDiff() }
 
     updateTimeDiff(){
         var dateNow = new Date();
@@ -64,9 +63,9 @@ export default class Trending extends Vue{
         
         this.timeDiff = "";
         if(minutes > 0)
-            this.timeDiff += minutes.toString() + (minutes == 1) ? " min " : " mins "        
+            this.timeDiff += minutes.toString() + ((minutes == 1) ? " min " : " mins ")        
         if(hours > 0)
-            this.timeDiff = hours.toString() + (hours == 1) ? " hr " : " hrs "
+            this.timeDiff = hours.toString() + ((hours == 1) ? " hr " : " hrs ")
         console.log('Updating ', `${minutes}, ${hours}`);
         this.timeDiff = (this.timeDiff == "") ? "now" : this.timeDiff + " ago"  
     }
