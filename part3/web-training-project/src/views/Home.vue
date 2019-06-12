@@ -23,17 +23,21 @@ import axios from 'axios';
   }
 })
 export default class Home extends Vue {
-
+  
   axiosPokemonCall(endPoint:string) {
-    console.log('Pokemon API Call');
-    var url = 'https://pokeapi.co/api/v2/' + endPoint;
-    axios.get(url).then(response => {
-      console.log('Status: ', response.status);
-      console.log('Data: ', response.data);
-    }).catch(error => {
-      console.log('Could not fetch the resource');
-      console.log('Error: ', error);
-    });
+    try {
+      console.log('Pokemon API Call');
+      var url = 'https://pokeapi.co/api/v2/' + endPoint;
+      axios.get(url).then(response => {
+        console.log('Status: ', response.status);
+        console.log('Data: ', response.data);
+      }).catch(error => {
+        console.log('Could not fetch the resource');
+        console.log('Error: ', error);
+      });
+    } catch (error) {
+        console.log('Catch Error: ', error);
+    }
   }
 
   mounted() {

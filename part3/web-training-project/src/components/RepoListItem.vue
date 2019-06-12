@@ -1,8 +1,8 @@
 <template lang="pug">
     li.list 
-        h3
+        #repo-name.f5.f3-ns
             a(v-bind:href="repo.html_url").link.blue {{repo.full_name}}
-        p {{repo.description}}
+        p.f7.f5-ns {{repo.description}}
         p.f7 Stars Count: {{repo.stargazers_count}}
         hr    
 </template>

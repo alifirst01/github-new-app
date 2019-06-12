@@ -1,21 +1,26 @@
 <template lang="pug">
-    .trending.w-80.center
-        h1.center Trending
+    .trending.w-80.w-90-ns.pt4.center
+        div.f2.f1-ns.center Trending
         
-        #loading.pv6(v-if="loading")
-            pulse-loader(:loading='loading', :color='color', :size='size')
+        #loading.pv6(v-if="loading==0")
+            pulse-loader(:loading='loading==0', :color='color', :size='size')
             p Fetching Trending Repositories
-        
+        #error.pv6.red(v-else-if=("loading==1"))
+            p.red.center.w-50
+                | An error occured while fetching the trending repositories from Github. 
+                br 
+                | Please refresh the page or try again later.
         #t-repos(v-else)
-            p.center See what the TypeScript community is most excited about today.
+            div.f7.f5-ns.center See what the TypeScript community is most excited about today.
             #main-content
-                .fl.w-80
-                    ul 
+                .fr-ns.tr.w-20-ns.pt3.pt4-ns
+                    button.f5-ns.f7(v-on:click="getTrendingRepos") Refresh
+                    p(v-model="lastUpdated").f7 Last Updated: {{timeDiff}}  
+                .fl-ns.w-80-ns
+                    ul.pl0.pl4-ns
                         repo-list-item.tl(v-for="trepo in trendingRepos"
                                           v-bind:repo="trepo")   
-                .fr.tr.w-20
-                    button(v-on:click="getTrendingRepos") Refresh
-                    p(v-model="lastUpdated").f7 Last Updated: {{timeDiff}}     
+                   
 </template>
 
 <script lang="ts">
@@ -34,8 +39,8 @@ import axios from 'axios';
 export default class Trending extends Vue{
     timer:any = ""
     timeDiff:string = ""
-    loading:boolean = true
-    lastUpdated:Date = Date.now()
+    loading:number = 0
+    lastUpdated:Date = new Date()
     trendingRepos:Array<Object> = []
 
     beforeMount(){
@@ -75,7 +80,7 @@ export default class Trending extends Vue{
         var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
         var url = 'https://api.github.com/search/repositories';
         
-        this.loading = true;
+        this.loading = 0;
         return await axios.get(url, {
             params: {
             'q': 'typescript',
@@ -85,7 +90,7 @@ export default class Trending extends Vue{
             }
         })
         .then(response => {
-            this.loading = false;
+            this.loading = 2;
             this.trendingRepos = response.data.items;
             this.lastUpdated = new Date();
             var outdatedResults = this.trendingRepos.filter(item => {
@@ -95,7 +100,7 @@ export default class Trending extends Vue{
             console.log('Trending Repos:', this.trendingRepos);
         })
         .catch(error => {
-            this.loading = false;
+            this.loading = 1;
             console.log('Error: ', error);
         });
     }
