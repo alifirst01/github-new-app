@@ -1,10 +1,21 @@
 $dark-theme: #242424;
 $light-theme: #FFFFFF;
-
-.bg-dark{
-    background-color: $dark-theme;
-}
+$primary-theme: #151515;
 
 .bg-light{
     background-color: $light-theme;
+}
+
+.bg-dark{
+    background-color: $primary-theme;
+}
+
+.primary{
+    background-color: $primary-theme;
+    border: 0.1rem solid #f0e3e3;
+}
+
+.background{
+    background-color: $light-theme;
+    border: 0.1rem solid #979797;
 }

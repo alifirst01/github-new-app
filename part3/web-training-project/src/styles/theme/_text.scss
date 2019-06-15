@@ -1,9 +1,12 @@
 $primary-text-color: #000000;
+$dark-gray-color: rgba(69, 69, 69, 0.87);
+$dark-gray-color: rgba(23, 23, 23, 0.87);
+$medium-blue-color: #3241D8;
 
 h1 {
-    color: $primary-text-color;
+    color: $dark-gray-color;
     font-weight: 700;
-    font-size: 2.3rem;
+    font-size: 3rem;
     @extend .f1; // Import other SASS classes written into this SASS class.
 }
 
@@ -15,14 +18,22 @@ h2 {
 }
 
 h3 {
-    color: $primary-text-color;
+    color: $dark-gray-color;
     font-weight: 500;
     font-size: 1.5rem;
     @extend .f3; // Import other SASS classes written into this SASS class.
 }
 
+h3-link {
+    color: $medium-blue-color;
+    font-weight: 500;
+    font-size: 1.5rem;
+    cursor: pointer;
+    @extend .f3;
+}
+
 p {
-    color: $primary-text-color;
+    color: $dark-gray-color;
     font-size: 1rem;
     @extend .f5;
 }
