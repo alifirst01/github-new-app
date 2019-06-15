@@ -14,7 +14,7 @@
             div.f7.f5-ns.center See what the TypeScript community is most excited about today.
             #main-content
                 .fr-ns.tr.w-20-ns.pt3.pt4-ns
-                    button.f5-ns.f7(v-on:click="getTrendingRepos") Refresh
+                    //- button.f5-ns.f7(v-on:click="getTrendingRepos") Refresh
                     p(v-model="lastUpdated").f7 Last Updated: {{timeDiff}}  
                 .fl-ns.w-80-ns
                     ul.pl0.pl4-ns
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-property-decorator";
+import { Component, Watch, Vue, Prop } from "vue-property-decorator";
 import RepoListItem from "@/components/RepoListItem.vue"
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import axios from 'axios';
@@ -42,68 +42,101 @@ export default class Trending extends Vue{
     loading:number = 0
     lastUpdated:Date = new Date()
     trendingRepos:Array<Object> = []
+    
+    @Prop({default: 'default'})
+    code: string
 
-    beforeMount(){
-        this.getTrendingRepos();
+    created(){
+        // console.log('My code', this.code);
+        // console.log('Route', this.$route.query)   
+        var query = window.location.href;
+        if(this.$store.getters.isLoggedIn == false && query.includes('code')){
+            query = query.split('?')[1];
+            var code = query.split('=')[1].split('#')[0];
+            this.getGithubAccessToken(code).then(accessToken => {
+                this.$store.dispatch('setCode', accessToken);
+                this.$router.push('/issues');
+            });
+        };
+        // this.timer = setInterval(this.updateTimeDiff, 65000);
     }
 
-    created() {
-        this.timer = setInterval(this.updateTimeDiff, 65000);
-    }
-
-    beforeDestroy() {
-        clearInterval(this.timer)
-    }
-
-    @Watch('lastUpdated', { immediate: true })
-    onChange(val, oldVal){ this.updateTimeDiff() }
-
-    updateTimeDiff(){
-        var dateNow = new Date();
-        var seconds = Math.floor((dateNow - this.lastUpdated) / 1000);
-        var minutes = Math.floor(seconds / 60);
-        var hours = Math.floor(minutes / 60);
-        
-        minutes = minutes % 60
-        
-        this.timeDiff = "";
-        if(minutes > 0)
-            this.timeDiff += minutes.toString() + ((minutes == 1) ? " min " : " mins ")        
-        if(hours > 0)
-            this.timeDiff = hours.toString() + ((hours == 1) ? " hr " : " hrs ")
-        console.log('Updating ', `${minutes}, ${hours}`);
-        this.timeDiff = (this.timeDiff == "") ? "now" : this.timeDiff + " ago"  
-    }
-
-    async getTrendingRepos(): Promise<void> {
-        console.log('Github API Call');
-        var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-        var url = 'https://api.github.com/search/repositories';
-        
-        this.loading = 0;
-        return await axios.get(url, {
-            params: {
-            'q': 'typescript',
-            'sort': 'stars',
-            'order': 'desc',
-            'pushed': yesterday + '..*',
+    async getGithubAccessToken(accessCode):Promise<string>{
+        var tokenUrl = "https://github-app-login.foundersclubsoftware.now.sh/auth";
+        return await axios({
+            method: 'post',
+            url: tokenUrl,
+            data: {
+            'code': accessCode,  
+            'state': '12345',
             }
         })
         .then(response => {
-            this.loading = 2;
-            this.trendingRepos = response.data.items;
-            this.lastUpdated = new Date();
-            var outdatedResults = this.trendingRepos.filter(item => {
-                return new Date(item.updated_at) < yesterday;
-            });
-            console.log('Outdated Results', outdatedResults);
-            console.log('Trending Repos:', this.trendingRepos);
-        })
-        .catch(error => {
-            this.loading = 1;
-            console.log('Error: ', error);
+            return response.data.access_token;
+        }).catch(error => {
+            alert('Error: Could not retreive accessToken from github.com... Try again later');
+            console.log("Error", error);
+            this.$router.push('/login'); 
         });
     }
+
+    // beforeMount(){
+    //     this.getTrendingRepos();
+    // }
+
+    // beforeDestroy() {
+    //     clearInterval(this.timer)
+    // }
+
+    // @Watch('lastUpdated', { immediate: true })
+    // onChange(val, oldVal){ this.updateTimeDiff() }
+
+    // updateTimeDiff(){
+    //     var dateNow = new Date();
+    //     var seconds = Math.floor((dateNow - this.lastUpdated) / 1000);
+    //     var minutes = Math.floor(seconds / 60);
+    //     var hours = Math.floor(minutes / 60);
+        
+    //     minutes = minutes % 60
+        
+    //     this.timeDiff = "";
+    //     if(minutes > 0)
+    //         this.timeDiff += minutes.toString() + ((minutes == 1) ? " min " : " mins ")        
+    //     if(hours > 0)
+    //         this.timeDiff = hours.toString() + ((hours == 1) ? " hr " : " hrs ")
+    //     console.log('Updating ', `${minutes}, ${hours}`);
+    //     this.timeDiff = (this.timeDiff == "") ? "now" : this.timeDiff + " ago"  
+    // }
+
+    // async getTrendingRepos(): Promise<void> {
+    //     console.log('Github API Call');
+    //     var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
+    //     var url = 'https://api.github.com/search/repositories';
+        
+    //     this.loading = 0;
+    //     return await axios.get(url, {
+    //         params: {
+    //         'q': 'typescript',
+    //         'sort': 'stars',
+    //         'order': 'desc',
+    //         'pushed': yesterday + '..*',
+    //         }
+    //     })
+    //     .then(response => {
+    //         this.loading = 2;
+    //         this.trendingRepos = response.data.items;
+    //         this.lastUpdated = new Date();
+    //         var outdatedResults = this.trendingRepos.filter(item => {
+    //             return new Date(item.updated_at) < yesterday;
+    //         });
+    //         console.log('Outdated Results', outdatedResults);
+    //         console.log('Trending Repos:', this.trendingRepos);
+    //     })
+    //     .catch(error => {
+    //         this.loading = 1;
+    //         console.log('Error: ', error);
+    //     });
+    // }
 
     
 };

@@ -23,7 +23,7 @@ import axios from 'axios';
   }
 })
 export default class Home extends Vue {
-  
+
   axiosPokemonCall(endPoint:string) {
     try {
       console.log('Pokemon API Call');
@@ -38,10 +38,6 @@ export default class Home extends Vue {
     } catch (error) {
         console.log('Catch Error: ', error);
     }
-  }
-
-  mounted() {
-    this.axiosPokemonCall('type/3/');
   }
 }
 </script>
