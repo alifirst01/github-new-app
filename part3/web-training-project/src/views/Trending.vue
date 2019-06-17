@@ -14,7 +14,7 @@
             div.f7.f5-ns.center See what the TypeScript community is most excited about today.
             #main-content
                 .fr-ns.tr.w-20-ns.pt3.pt4-ns
-                    //- button.f5-ns.f7(v-on:click="getTrendingRepos") Refresh
+                    button.f5-ns.f7(v-on:click="getTrendingRepos") Refresh
                     p(v-model="lastUpdated").f7 Last Updated: {{timeDiff}}  
                 .fl-ns.w-80-ns
                     ul.pl0.pl4-ns
@@ -58,7 +58,7 @@ export default class Trending extends Vue{
                 this.$router.push('/issues');
             });
         };
-        // this.timer = setInterval(this.updateTimeDiff, 65000);
+        this.timer = setInterval(this.updateTimeDiff, 65000);
     }
 
     async getGithubAccessToken(accessCode):Promise<string>{
@@ -80,63 +80,63 @@ export default class Trending extends Vue{
         });
     }
 
-    // beforeMount(){
-    //     this.getTrendingRepos();
-    // }
+    beforeMount(){
+        this.getTrendingRepos();
+    }
 
-    // beforeDestroy() {
-    //     clearInterval(this.timer)
-    // }
+    beforeDestroy() {
+        clearInterval(this.timer)
+    }
 
-    // @Watch('lastUpdated', { immediate: true })
-    // onChange(val, oldVal){ this.updateTimeDiff() }
+    @Watch('lastUpdated', { immediate: true })
+    onChange(val, oldVal){ this.updateTimeDiff() }
 
-    // updateTimeDiff(){
-    //     var dateNow = new Date();
-    //     var seconds = Math.floor((dateNow - this.lastUpdated) / 1000);
-    //     var minutes = Math.floor(seconds / 60);
-    //     var hours = Math.floor(minutes / 60);
+    updateTimeDiff(){
+        var dateNow = new Date();
+        var seconds = Math.floor((dateNow - this.lastUpdated) / 1000);
+        var minutes = Math.floor(seconds / 60);
+        var hours = Math.floor(minutes / 60);
         
-    //     minutes = minutes % 60
+        minutes = minutes % 60
         
-    //     this.timeDiff = "";
-    //     if(minutes > 0)
-    //         this.timeDiff += minutes.toString() + ((minutes == 1) ? " min " : " mins ")        
-    //     if(hours > 0)
-    //         this.timeDiff = hours.toString() + ((hours == 1) ? " hr " : " hrs ")
-    //     console.log('Updating ', `${minutes}, ${hours}`);
-    //     this.timeDiff = (this.timeDiff == "") ? "now" : this.timeDiff + " ago"  
-    // }
+        this.timeDiff = "";
+        if(minutes > 0)
+            this.timeDiff += minutes.toString() + ((minutes == 1) ? " min " : " mins ")        
+        if(hours > 0)
+            this.timeDiff = hours.toString() + ((hours == 1) ? " hr " : " hrs ")
+        console.log('Updating ', `${minutes}, ${hours}`);
+        this.timeDiff = (this.timeDiff == "") ? "now" : this.timeDiff + " ago"  
+    }
 
-    // async getTrendingRepos(): Promise<void> {
-    //     console.log('Github API Call');
-    //     var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-    //     var url = 'https://api.github.com/search/repositories';
+    async getTrendingRepos(): Promise<void> {
+        console.log('Github API Call');
+        var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
+        var url = 'https://api.github.com/search/repositories';
         
-    //     this.loading = 0;
-    //     return await axios.get(url, {
-    //         params: {
-    //         'q': 'typescript',
-    //         'sort': 'stars',
-    //         'order': 'desc',
-    //         'pushed': yesterday + '..*',
-    //         }
-    //     })
-    //     .then(response => {
-    //         this.loading = 2;
-    //         this.trendingRepos = response.data.items;
-    //         this.lastUpdated = new Date();
-    //         var outdatedResults = this.trendingRepos.filter(item => {
-    //             return new Date(item.updated_at) < yesterday;
-    //         });
-    //         console.log('Outdated Results', outdatedResults);
-    //         console.log('Trending Repos:', this.trendingRepos);
-    //     })
-    //     .catch(error => {
-    //         this.loading = 1;
-    //         console.log('Error: ', error);
-    //     });
-    // }
+        this.loading = 0;
+        return await axios.get(url, {
+            params: {
+            'q': 'typescript',
+            'sort': 'stars',
+            'order': 'desc',
+            'pushed': yesterday + '..*',
+            }
+        })
+        .then(response => {
+            this.loading = 2;
+            this.trendingRepos = response.data.items;
+            this.lastUpdated = new Date();
+            var outdatedResults = this.trendingRepos.filter(item => {
+                return new Date(item.updated_at) < yesterday;
+            });
+            console.log('Outdated Results', outdatedResults);
+            console.log('Trending Repos:', this.trendingRepos);
+        })
+        .catch(error => {
+            this.loading = 1;
+            console.log('Error: ', error);
+        });
+    }
 
     
 };

@@ -24,8 +24,9 @@ h3 {
     @extend .f3; // Import other SASS classes written into this SASS class.
 }
 
-h3-link {
+h3-link, h3-link a, h3-link a:visited{
     color: $medium-blue-color;
+    text-decoration: none;
     font-weight: 500;
     font-size: 1.5rem;
     cursor: pointer;
