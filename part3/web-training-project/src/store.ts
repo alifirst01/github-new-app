@@ -18,6 +18,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    code: state => state.accessCode,
     isLoggedIn: state => (state.accessCode != null)
   }
 });

@@ -18,9 +18,6 @@ export default new Router({
       name: "issues",
       component: () =>
         import(/* webpackChunkName: "issues" */ "./views/Issues.vue"),
-      meta: { 
-          requiresAuth: true
-      }
     },
     {
       path: "/login",

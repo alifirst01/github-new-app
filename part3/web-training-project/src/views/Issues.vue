@@ -10,7 +10,7 @@
             
             div.ma0.mt2.w-100.tr
                 img(src="@/assets/ic_refresh.svg")
-            div.background.mt3
+            div.background.mt3(v-if="issues.length > 0")
                 ul.list
                     li(v-for="issue in issues")
                         h3-link
