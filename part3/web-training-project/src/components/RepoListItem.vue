@@ -1,10 +1,14 @@
 <template lang="pug">
-    li.list 
-        #repo-name.f5.f3-ns
-            a(v-bind:href="repo.html_url").link.blue {{repo.full_name}}
-        p.f7.f5-ns {{repo.description}}
-        p.f7 Stars Count: {{repo.stargazers_count}}
-        hr    
+    li.w-100.cf
+        .fl.w-10.pv2
+            img.br4.w3.h3(v-bind:src="repo.avatarUrl")
+        .fr.w-90.pv2.pl3
+            h3-link
+                a(v-bind:href="repo.unameUrl") {{repo.username}}
+                |  / 
+                a(v-bind:href="repo.url") {{repo.name}}
+            p {{repo.description}}  
+                  
 </template>
 
 <script lang="ts">
