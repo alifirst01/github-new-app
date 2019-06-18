@@ -16,8 +16,14 @@ import axios from 'axios'
 @Component
 export default class Login extends Vue{
     redirectgithubLogin(){
-        var url = "https://github.com/login/oauth/authorize?client_id=5924f82128dc0c6d3ab7";
-        window.location.href = url;
+        var url = window.location.href.split('/login')[0];
+        var params = {
+            "client_id": "5924f82128dc0c6d3ab7",
+            "redirect_uri": url + '/issues'
+        }
+        var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
+        var redirectUrl = "https://github.com/login/oauth/authorize?" + queryString;
+        window.location.href = redirectUrl;
     }
 }
 

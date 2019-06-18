@@ -1,20 +1,20 @@
 <template lang="pug">
     
     .tl.mt4.w-50.center      
-        #loading.center.pv6.tc(v-if="loading==0")
+        #trending-loading.center.pv6.tc(v-if="loading==0")
             h1.f4 {{loadingMessage.m1}}
             h3(v-if="'m2' in loadingMessage") {{loadingMessage.m2}}
-        #error.pv6.red(v-else-if=("loading==1"))
+        #trending-error.pv6.red(v-else-if=("loading==1"))
             p.red.center.w-50 {{loadingMessage.m1}} 
-        #t-repos(v-else)
+        #trending-content(v-else)
             h1.w-100 GitHub Trending repos
             h3.ma0.mt3.w-100 Explore the top starred Typescript public repositories in the past 24 hours.
             
             div.ma0.mt2.w-100.tr
-                img.br2.pointer(src="@/assets/ic_refresh.svg" v-on:click="getTrendingRepos")
+                img.pointer(src="@/assets/ic_refresh.svg" v-on:click="getTrendingRepos")
                 p(v-model="lastUpdated").f7 Last Updated: {{timeDiff}}
             div.background.mt3(v-if="trendingRepos.length > 0")
-                ul.list.pl2
+                ul.list.ph2
                     repo-list-item(v-for="trepo in trendingRepos"
                                       v-bind:repo="trepo") 
                    

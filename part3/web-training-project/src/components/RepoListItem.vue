@@ -1,8 +1,8 @@
 <template lang="pug">
     li.w-100.cf
-        .fl.w-10.pv2
+        .fl.w-10.pv3
             img.br4.w3.h3(v-bind:src="repo.avatarUrl")
-        .fr.w-90.pv2.pl3
+        .fr.w-90.pv3.pl3
             h3-link
                 a(v-bind:href="repo.unameUrl") {{repo.username}}
                 |  / 
