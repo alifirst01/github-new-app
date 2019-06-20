@@ -8,7 +8,7 @@ Vue.config.productionTip = false;
 
 
 const options = {
-  color: '#1900ff',
+  color: '#FFFFFF',
   failedColor: '#874b4b',
   thickness: '0.5%',
   transition: {

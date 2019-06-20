@@ -1,16 +1,16 @@
 <template lang="pug">
     
-    .tl.mt4.w-50.center      
+    .tl.mt4.w-70.w-60-m.w-50-l.center      
         #trending-loading.center.pv6.tc(v-if="loading==0")
-            h1.f4 {{loadingMessage.m1}}
-            h3(v-if="'m2' in loadingMessage") {{loadingMessage.m2}}
+            h1.f5.f4-ns {{loadingMessage.m1}}
+            h3.f6.f5-ns(v-if="'m2' in loadingMessage") {{loadingMessage.m2}}
         #trending-error.pv6.red(v-else-if=("loading==1"))
-            p.red.center.w-50 {{loadingMessage.m1}} 
+            p.red.center.w-50-ns {{loadingMessage.m1}} 
         #trending-content(v-else)
-            h1.w-100 GitHub Trending repos
-            h3.ma0.mt3.w-100 Explore the top starred Typescript public repositories in the past 24 hours.
+            h1.f2.f1-ns GitHub Trending repos
+            h3.f4.f3-ns.ma0.mt3 Explore the top starred Typescript public repositories in the past 24 hours.
             
-            div.ma0.mt2.w-100.tr
+            div.ma0.mt2.tr
                 img.pointer(src="@/assets/ic_refresh.svg" v-on:click="getTrendingRepos")
                 p(v-model="lastUpdated").f7 Last Updated: {{timeDiff}}
             div.background.mt3(v-if="trendingRepos.length > 0")

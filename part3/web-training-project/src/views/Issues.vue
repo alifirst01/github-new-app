@@ -1,23 +1,23 @@
 <template lang="pug">
-    #login-loading.w-40.center.pv6.tl(v-if="loading==0")
-        h1.f3 {{loadingMsg.m1}}
-        h3(v-if="'m2' in loadingMsg") {{loadingMsg.m2}}
+    #login-loading.w-70.w-40-ns.center.pv6.tl(v-if="loading==0")
+        h1.f4.f3-ns {{loadingMsg.m1}}
+        h3.f5.f4-ns(v-if="'m2' in loadingMsg") {{loadingMsg.m2}}
     
     #issues-content(v-else)
         #logout-button.fr.pv3.ph4
-            h3-link(v-on:click="logout") Logout 
+            h3-link.f4.f3-ns.pointer(v-on:click="logout") Logout 
         br
-        .tl.mt4.w-40.center
-            h1.w-100 Github Issues
-            h3.ma0.mt3.w-100 Issues created by you, mentioning you, or assigned to you
+        .tl.mt4.w-70.w-50-m.w-40-l.center
+            h1.f2.f1-ns Github Issues
+            h3.f4.f3-ns.ma0.mt3.w-100 Issues created by you, mentioning you, or assigned to you
             
-            #refresh-button.ma0.mt2.w-100.tr.pointer
-                img(src="@/assets/ic_refresh.svg" v-on:click="getAllUserIssues")
+            #refresh-button.ma0.mt2.tr
+                img.pointer(src="@/assets/ic_refresh.svg" v-on:click="getAllUserIssues")
 
             #issues-loading.pv3.tc(v-if="loading == 2")
                 pulse-loader(:loading="loading == 2" :color="color" :size="size")
-                h1.f4 {{loadingMsg.m1}}
-                h3(v-if="'m2' in loadingMsg") {{loadingMsg.m2}}
+                h1.f5.f4-ns {{loadingMsg.m1}}
+                h3.f6.f5-ns(v-if="'m2' in loadingMsg") {{loadingMsg.m2}}
             #issues-error.pv2.red(v-else-if=("loading == 3"))
                 p.red.tc {{loadingMsg.m1}}
             #issues-main-content(v-else)
@@ -25,8 +25,8 @@
                     ul.list.ph3
                         li(v-for="issue in issues")
                             h3-link
-                                a(v-bind:href="issue.url") {{issue.title}}
-                            p {{issue.username}} / {{issue.repository}}
+                                a.f4.f3-ns(v-bind:href="issue.url") {{issue.title}}
+                            p.f6.f5-ns {{issue.username}} / {{issue.repository}}
 </template>
 
 <script lang="ts">
@@ -50,7 +50,7 @@ Component.registerHooks([
 export default class Issues extends Vue{ 
     issues: Array<Object> = [];
     loading:number = 0;
-    loadingMsg:Object = {}
+    loadingMsg:Object = {};
     
 
     beforeRouteEnter(to, from, next) {
@@ -111,7 +111,6 @@ export default class Issues extends Vue{
         
         this.loading = 2;
         this.loadingMsg = {m1: "Fetching issues from public repositories"};
-        
         return await axios.get(url, {
             headers: headers
         })

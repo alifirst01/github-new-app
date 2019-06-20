@@ -1,13 +1,13 @@
 <template lang="pug">
     li.w-100.cf
-        .fl.w-10.pv3
-            img.br4.w3.h3(v-bind:src="repo.avatarUrl")
-        .fr.w-90.pv3.pl3
+        .fl.w-10.pv3.dn.db-ns
+            img.br4-l.w2-m.h2-m.w3-l.h3-l(v-bind:src="repo.avatarUrl")
+        .fr-ns.w-90-ns.pv2.pv3-ns.pl1.pl3-ns
             h3-link
-                a(v-bind:href="repo.unameUrl") {{repo.username}}
-                |  / 
-                a(v-bind:href="repo.url") {{repo.name}}
-            p {{repo.description}}  
+                a.f4.f3-ns(v-bind:href="repo.unameUrl") {{repo.username}}
+                span.black.f4  / 
+                a.f4.f3-ns(v-bind:href="repo.url") {{repo.name}}
+            p.f6.f5-ns {{repo.description}}  
                   
 </template>
 
