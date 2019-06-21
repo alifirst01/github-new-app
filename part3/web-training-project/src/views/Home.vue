@@ -22,22 +22,5 @@ import axios from 'axios';
     VueLogo
   }
 })
-export default class Home extends Vue {
-
-  axiosPokemonCall(endPoint:string) {
-    try {
-      console.log('Pokemon API Call');
-      var url = 'https://pokeapi.co/api/v2/' + endPoint;
-      axios.get(url).then(response => {
-        console.log('Status: ', response.status);
-        console.log('Data: ', response.data);
-      }).catch(error => {
-        console.log('Could not fetch the resource');
-        console.log('Error: ', error);
-      });
-    } catch (error) {
-        console.log('Catch Error: ', error);
-    }
-  }
-}
+export default class Home extends Vue {}
 </script>

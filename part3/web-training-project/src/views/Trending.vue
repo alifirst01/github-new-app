@@ -12,8 +12,8 @@
             
             div.ma0.mt2.tr
                 img.pointer(src="@/assets/ic_refresh.svg" v-on:click="getTrendingRepos")
-                p(v-model="lastUpdated").f7 Last Updated: {{timeDiff}}
-            div.background.mt3(v-if="trendingRepos.length > 0")
+                p.f7 Last Updated: {{timeDiff}}
+            div.background.mt3.mb3(v-if="trendingRepos.length > 0")
                 ul.list.ph2
                     repo-list-item(v-for="trepo in trendingRepos"
                                       v-bind:repo="trepo") 
@@ -21,23 +21,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue, Prop } from "vue-property-decorator";
+import { Component, Watch, Vue } from "vue-property-decorator";
+import TrendingController from "@/controllers/TrendingController";
+import TrendingRepositoryImpl from "@/repositories/TrendingRepository";
 import RepoListItem from "@/components/RepoListItem.vue"
+import DateMixin from "@/mixins/DateMixin";
 import axios from 'axios';
 
 @Component({
     name: "trending",
+    mixins: [DateMixin],
     components: {
         RepoListItem,
     }
 })
 export default class Trending extends Vue{
     timer:any = ""
-    timeDiff:string = ""
     loading:number = 0
     loadingMessage:Object = {}
-    lastUpdated:Date = new Date()
     trendingRepos:Array<Object> = []
+    controller:TrendingController = new TrendingController(new TrendingRepositoryImpl(axios.create({})))
 
     created(){
         this.timer = setInterval(this.updateTimeDiff, 65000);
@@ -55,64 +58,24 @@ export default class Trending extends Vue{
     onChange(val, oldVal){ this.updateTimeDiff() }
 
     updateTimeDiff(){
-        var dateNow = new Date();
-        var seconds = Math.floor((dateNow - this.lastUpdated) / 1000);
-        var minutes = Math.floor(seconds / 60);
-        var hours = Math.floor(minutes / 60);
-        
-        minutes = minutes % 60
-        
-        this.timeDiff = "";
-        if(minutes > 0)
-            this.timeDiff += minutes.toString() + ((minutes == 1) ? " min " : " mins ")        
-        if(hours > 0)
-            this.timeDiff = hours.toString() + ((hours == 1) ? " hr " : " hrs ")
-        this.timeDiff = (this.timeDiff == "") ? "now" : this.timeDiff + " ago"  
+        this.dateTimeDiffString();  
     }
 
     async getTrendingRepos(): Promise<void> {
-        this.trendingRepos = [];
-        var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
-        var url = 'https://api.github.com/search/repositories';
-        
         this.loading = 0;
         this.loadingMessage = {m1: "Fetching Trending Repositories"};
         this.$Progress.start();
-        return await axios.get(url, {
-            params: {
-            'q': 'typescript',
-            'sort': 'stars',
-            'order': 'desc',
-            'pushed': yesterday + '..*',
-            }
-        })
-        .then(response => {
-            response.data.items.forEach(item => {
-                this.trendingRepos.push({
-                    url: item.html_url,
-                    name: item.name,
-                    description: item.description,
-                    username: item.owner.login,
-                    unameUrl: item.owner.html_url,
-                    avatarUrl: item.owner.avatar_url,
-                })
-            });
+        return await this.controller.getTrendingRepos().then(repos => {
+            this.trendingRepos = repos;
             this.loading = 2;
             this.$Progress.finish();
             this.lastUpdated = new Date();
-            var outdatedResults = this.trendingRepos.filter(item => {
-                return new Date(item.updated_at) < yesterday;
-            });
-        })
-        .catch(error => {
+        }).catch(error => {
             this.loading = 1;
-            this.loadingMessage = {m1: "An error occured while fetching the trending repositories from Github. Try again later...."}
+            this.loadingMessage = {m1: error.message}
             this.$Progress.fail();
-            console.log('Error: ', error);
         });
     }
-
-    
 };
 </script>
 

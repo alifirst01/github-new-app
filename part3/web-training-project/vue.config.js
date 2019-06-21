@@ -3,7 +3,9 @@
 
 const path = require("path");
 
-configureWebpack: {
+module.exports = {
+  configureWebpack: {
+    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -12,9 +14,7 @@ configureWebpack: {
             }
         ]
     }
-}
-
-module.exports = {
+  },
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'scss',
