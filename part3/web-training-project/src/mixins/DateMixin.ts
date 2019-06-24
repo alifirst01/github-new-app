@@ -6,8 +6,8 @@ export default class DateMixin extends Vue {
     timeDiff:string = ""
     lastUpdated:Date = new Date()
 
-    dateTimeDiffString(){
-        var seconds = Math.floor((this.lastUpdated - new Date()) / 1000);
+    updateTimeDiff(){
+        var seconds = Math.floor((new Date() - this.lastUpdated) / 1000);
         var minutes = Math.floor(seconds / 60);
         var hours = Math.floor(minutes / 60);
     

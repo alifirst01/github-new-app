@@ -53,5 +53,8 @@
       "vue-cli-service lint",
       "git add"
     ]
+  },
+  "jest": {
+     "testEnvironment": "node"
   }
 }

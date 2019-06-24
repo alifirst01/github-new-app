@@ -4,20 +4,25 @@ export default class TrendingController{
     constructor(private trendingRepository: TrendingRepository){
     }
 
-    async getTrendingRepos(): Promise<Repo[]>{
-        return this.trendingRepository.getRepos().then((result: GetReposResult) => {
-            if (result.error){
-                let error:Error;
-                if(result.error.message.includes('system is down'))
-                    error = result.error;
+    async getTrendingRepos(): Promise<GetReposResult>{
+        return this.trendingRepository.getRepos().then((networkResult: HttpNetworkRequestResult) => {
+            let result: GetReposResult;
+            if (networkResult.error){
+                if(networkResult.statusCode! >= 500)
+                    result = {
+                        error: new Error("Sorry, system is down. Check back later and try again.")
+                    }
                 else
-                    error = new Error("An error occurred while fetching the trending repositories from Github. Try again later....");
-                return Promise.reject(error);
+                    result = {
+                        error: new Error("An error occurred while fetching the trending repositories from Github. Try again later....")
+                    }
             }
             else{
-                let repos = result.repos!;
-                return Promise.resolve(repos);
+                result = { 
+                    repos: networkResult.response
+                }
             }
+            return Promise.resolve(result);
         });
     }
 }

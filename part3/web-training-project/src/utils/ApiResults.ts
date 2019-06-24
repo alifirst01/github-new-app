@@ -8,3 +8,13 @@ interface GetReposResult {
     repos?: Repo[]
     error?: Error 
 }
+
+interface GetIssuesResult {
+    issues?: Issue[]
+    error?: Error
+}
+
+interface GetGithubAuthResult{
+    accessToken: string
+    error?: Error
+}

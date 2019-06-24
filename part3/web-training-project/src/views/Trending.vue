@@ -57,24 +57,23 @@ export default class Trending extends Vue{
     @Watch('lastUpdated', { immediate: true })
     onChange(val, oldVal){ this.updateTimeDiff() }
 
-    updateTimeDiff(){
-        this.dateTimeDiffString();  
-    }
-
     async getTrendingRepos(): Promise<void> {
         this.loading = 0;
         this.loadingMessage = {m1: "Fetching Trending Repositories"};
         this.$Progress.start();
-        return await this.controller.getTrendingRepos().then(repos => {
-            this.trendingRepos = repos;
-            this.loading = 2;
-            this.$Progress.finish();
-            this.lastUpdated = new Date();
-        }).catch(error => {
-            this.loading = 1;
-            this.loadingMessage = {m1: error.message}
-            this.$Progress.fail();
-        });
+        return await this.controller.getTrendingRepos().then((reposResult: GetReposResult) => {
+            if (reposResult.error){
+                this.loading = 1;
+                this.loadingMessage = {m1: reposResult.error.message};
+                this.$Progress.fail();
+            }
+            else{
+                this.trendingRepos = reposResult.repos!;
+                this.loading = 2;
+                this.$Progress.finish();
+                this.lastUpdated = new Date();
+            }
+        })
     }
 };
 </script>
