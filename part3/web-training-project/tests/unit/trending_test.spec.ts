@@ -1,110 +1,145 @@
-interface Repo {
-    name: string 
-    description: string 
-}
-  
-interface GetTrendingReposHttpRequestResult {
-    repos?: Repo[]
-    error?: Error
-}
-  
-interface HttpNetworkRequestResult {
-    // Both of these fields will be populated if the network request happened. You may have received a bad HTTP response such as a 500 or 422, but at least it happened!
-    statusCode?: number 
-    responseBody?: any 
-    // Error will only be populated if the network request happened. Maybe there was a problem with the Internet. 
-    error?: Error
-}
-  
-interface HttpNetworkRequestUtil {
-    get(path: string): Promise<HttpNetworkRequestResult>
-}
-  
-class GetTrendingReposController {
-    constructor(private networkRequestUtil: HttpNetworkRequestUtil) {
-    }
+import TrendingRepository from "@/repositories/TrendingRepository";
+import TrendingController from '@/controllers/TrendingController';
+import TrendingRepositoryImpl from '@/repositories/TrendingRepository';
 
-    async getTrendingRepos(): Promise<GetTrendingReposHttpRequestResult> {
-        return this.networkRequestUtil.get("/search/trending").then(networkResult => {
-            let result: GetTrendingReposHttpRequestResult
-            if (networkResult.error) {
-                result = {
-                    error: networkResult.error
-                }
-            } else {
-                if (networkResult.statusCode! >= 500) {
-                    result = {
-                        error: new Error("Sorry, our system is down. Check back later and try again.")
-                    }
-                } 
-                // We could continue to parse status codes, but the trending repos endpoint doesn't return other http response codes we need to prepare for. 
-            
-                else {
-                    result = {
-                        repos: networkResult.responseBody as Repo[]
-                    }
-                }
-            }
-            return Promise.resolve(result)
-        })
-    }
-}
-
-describe("GetTrendingReposController unit tests", () => {
-    
+describe("TrendingController unit tests", () => {
     describe("getTrendingRepos()", () => {
-
-        it("should receive error if network request returns back a 500", () => {
-            var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
-                statusCode: 500, 
-                responseBody: "Internal Server Error",
-            });
-            let getRequestMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
-            let networkRequestStub: HttpNetworkRequestUtil = {
-                get: getRequestMock,
-            };
-            
-            var expected = {
-                error: new Error("Sorry, our system is down. Check back later and try again.")
-            }
-            let getTrendingReposController = new GetTrendingReposController(networkRequestStub);
-            expect(getTrendingReposController.getTrendingRepos()).resolves.toEqual(expected);
+        let mockAxios: any;
+        beforeAll(() => {
+            mockAxios = jest.genMockFromModule('axios');
+            mockAxios.create = jest.fn(() => mockAxios);
         });
 
-        it("should receive error if the network request failed with an error (the request did not complete)", () => {
-            let testError = new Error("the request did not complete");
+        it('should return meaningful error response if getTrendingRepos returns error with status code less than 400', () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
-                error: testError
+                statusCode: 400, 
+                error: new Error,
             });
-            let getRequestMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
-            let networkRequestStub: HttpNetworkRequestUtil = {
-                get: getRequestMock,
-            };
+            let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
+            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios.create());
+            trendingRepositoryStub.getRepos = getReposMock;
+            
             var expected = {
-                error: testError
+                error: new Error("An error occurred while fetching the trending repositories from Github. Try again later....")
             }
-            let getTrendingReposController = new GetTrendingReposController(networkRequestStub);
-            expect(getTrendingReposController.getTrendingRepos()).resolves.toEqual(expected);
-        })
+            let trendingController = new TrendingController(trendingRepositoryStub);
+            expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+        });
+        
+        it('should return error specifying "system is down" if the status code is 500', () => {
+            var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
+                statusCode: 500, 
+                error: new Error("Internal Server Error"),
+            });
+            let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
+            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios.create());
+            trendingRepositoryStub.getRepos = getReposMock;
+            
+            var expected = {
+                error: new Error("Sorry, system is down. Check back later and try again.")
+            }
+            let trendingController = new TrendingController(trendingRepositoryStub);
+            expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+        });
 
-        it("should receive list of repos if the network request was successful", () => {
+        it('should return list of trending repos if the network request was successful', () => {
             let testRepo:Repo = {
                 name: "foo", 
-                description: "bar"
-            } 
+                url: "foo@example",
+                description: "bar",
+                username: "baz",
+                unameUrl: "baz@example",
+                avatarUrl: "avatar@example"
+            }; 
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
-                statusCode: 200, 
-                responseBody: [testRepo],
+                response: [testRepo]
             });
-            let getRequestMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
-            let networkRequestStub: HttpNetworkRequestUtil = {
-                get: getRequestMock,
-            };
+            let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
+            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios.create());
+            trendingRepositoryStub.getRepos = getReposMock;
+
             var expected = {
                 repos: [testRepo] 
             }
-            let getTrendingReposController = new GetTrendingReposController(networkRequestStub);
-            expect(getTrendingReposController.getTrendingRepos()).resolves.toEqual(expected);
-        })
-    })
-})
+            let trendingController = new TrendingController(trendingRepositoryStub);
+            expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+        });
+        
+    });
+});
+
+describe("TrendingRepository unit tests", () => {
+    describe("getRepos()", () => {
+        let mockAxios: any;
+        beforeAll(() => {
+            mockAxios = jest.genMockFromModule('axios');
+        });
+
+        it('should return error and status code if the get requests fails with rejected promise', () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.reject({
+                status: 400,
+                error: new Error("Server responded with an error"),
+            }));
+    
+            let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
+            
+            var expected: HttpNetworkRequestResult = {
+                statusCode: 400,
+                error: new Error("Server responded with an error"),
+            }
+            expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
+        });
+
+        it('should return an error if the get requests returned a response but an error occurred during parsing of response', () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve({
+                data: {
+                    items: [{
+                        'html_url': 'foo@example',
+                        'name': 'foo',
+                        'description': 'bar',
+                    }]
+                },
+            }));
+    
+            let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
+            
+            var expected: HttpNetworkRequestResult = {
+                statusCode: 500,
+                error: new TypeError("Cannot read property 'login' of undefined"),
+            };
+            expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
+        });
+
+        it('should return a response containing trendingRepos list if the get requests returns a response', () => {
+            let testRepo:Repo = {
+                name: "foo", 
+                url: "foo@example",
+                description: "bar",
+                username: "baz",
+                unameUrl: "baz@example",
+                avatarUrl: "avatar@example"
+            }; 
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve({
+                data: {
+                    items: [{
+                        'html_url': 'foo@example',
+                        'name': 'foo',
+                        'description': 'bar',
+                        'owner': {
+                            'login': 'baz',
+                            'html_url': 'baz@example',
+                            'avatar_url': 'avatar@example',
+                        }
+                    }]
+                },
+            }));
+    
+            let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
+            
+            var expected: HttpNetworkRequestResult = {
+                response: [testRepo]
+            }
+            expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
+        });
+    });
+});
