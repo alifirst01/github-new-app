@@ -2,14 +2,11 @@ import TrendingRepository from "@/repositories/TrendingRepository";
 import TrendingController from '@/controllers/TrendingController';
 import TrendingRepositoryImpl from '@/repositories/TrendingRepository';
 
+const mockAxios:any = jest.genMockFromModule('axios');
+
 describe("TrendingController unit tests", () => {
     describe("getTrendingRepos()", () => {
-        let mockAxios: any;
-        beforeAll(() => {
-            mockAxios = jest.genMockFromModule('axios');
-            mockAxios.create = jest.fn(() => mockAxios);
-        });
-
+        
         it('should return meaningful error response if getTrendingRepos returns error with status code less than 400', () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
                 statusCode: 400, 
@@ -70,15 +67,13 @@ describe("TrendingController unit tests", () => {
 
 describe("TrendingRepository unit tests", () => {
     describe("getRepos()", () => {
-        let mockAxios: any;
-        beforeAll(() => {
-            mockAxios = jest.genMockFromModule('axios');
-        });
 
         it('should return error and status code if the get requests fails with rejected promise', () => {
             mockAxios.get.mockImplementationOnce(() => Promise.reject({
-                status: 400,
-                error: new Error("Server responded with an error"),
+                response: {
+                    status: 400,
+                    data: {message: "Server responded with an error"},
+                }
             }));
     
             let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
@@ -105,7 +100,7 @@ describe("TrendingRepository unit tests", () => {
             
             var expected: HttpNetworkRequestResult = {
                 statusCode: 500,
-                error: new TypeError("Cannot read property 'login' of undefined"),
+                error: new Error("Cannot read property 'login' of undefined"),
             };
             expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
         });

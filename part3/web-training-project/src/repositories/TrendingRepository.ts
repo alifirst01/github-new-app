@@ -37,16 +37,23 @@ export default class TrendingRepositoryImpl implements TrendingRepository{
                     response: trendingRepos
                 });
             } catch (error) {
-                throw {status: 500, error: error};
+                throw error
             }
             
         })
         .catch(error => {
-            return Promise.resolve({
-                statusCode: error.status,
-                error: error.error,
-            })
+            let errorResponse: HttpNetworkRequestResult;
+            if (error.response)             // The request was made and the server responded with a status code that falls out of the range of 2xx
+                errorResponse = {
+                    statusCode: (error.response.status)? error.response.status : 400,
+                    error: new Error(error.response.data.message ? error.response.data.message : "Server responded with an error"),
+                }
+            else                            // The request was made but no response was received
+                errorResponse = {
+                    statusCode: 500,
+                    error: new Error(error.message ? error.message: ""),
+                }
+            return Promise.resolve(errorResponse);
         });
     }
-
 }

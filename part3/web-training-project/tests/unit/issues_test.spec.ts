@@ -2,13 +2,10 @@ import IssuesRepository from "@/repositories/IssuesRepository";
 import IssuesRepositoryImpl from "@/repositories/IssuesRepository";
 import IssuesController from '@/controllers/IssuesController';
 
+const mockAxios:any = jest.genMockFromModule('axios');
+
 describe("IssuesController unit tests", () => {
     describe("getUserIssues()", () => {
-        let mockAxios: any;
-        beforeAll(() => {
-            mockAxios = jest.genMockFromModule('axios');
-            mockAxios.create = jest.fn(() => mockAxios);
-        });
 
         it('should return meaningful error response if getUserIssues returns error with status code less than 400', () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
@@ -68,15 +65,13 @@ describe("IssuesController unit tests", () => {
 
 describe("IssuesRepository unit tests", () => {
     describe("getAllIssues()", () => {
-        let mockAxios: any;
-        beforeAll(() => {
-            mockAxios = jest.genMockFromModule('axios');
-        });
 
         it('should return error and status code if the "/user" get requests fails', () => {
             mockAxios.get.mockImplementationOnce(() => Promise.reject({
-                status: 400,
-                error: new Error("Server responded with an error on user get request"),
+                response: {
+                    status: 400,
+                    data: {message: "Server responded with an error on user get request"},
+                }
             }));
     
             let issuesRepository: IssuesRepository = new IssuesRepositoryImpl(mockAxios);
@@ -96,8 +91,10 @@ describe("IssuesRepository unit tests", () => {
             }));
 
             mockAxios.get.mockImplementationOnce(() => Promise.reject({
-                status: 400,
-                error: new Error("Server responded with error on repos get request"),
+                response: {
+                    status: 400,
+                    data: {message: "Server responded with error on repos get request"},
+                }
             }));
     
             let issuesRepository: IssuesRepository = new IssuesRepositoryImpl(mockAxios);
@@ -124,8 +121,10 @@ describe("IssuesRepository unit tests", () => {
             }));
 
             mockAxios.get.mockImplementationOnce(() => Promise.reject({
-                status: 400,
-                error: new Error("Server responded with error on issues get request"),
+                response: {
+                    status: 400,
+                    data: {message: "Server responded with error on issues get request"},
+                }
             }));
     
             let issuesRepository: IssuesRepository = new IssuesRepositoryImpl(mockAxios);

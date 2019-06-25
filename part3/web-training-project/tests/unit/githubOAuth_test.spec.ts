@@ -2,13 +2,10 @@ import GithubAuthRepository from "@/repositories/GithubAuthRepository";
 import GithubAuthController from '@/controllers/GithubAuthController';
 import GithubAuthRepositoryImpl from '@/repositories/GithubAuthRepository';
 
+const mockAxios:any = jest.genMockFromModule('axios');
+
 describe("GithubAuthController unit tests", () => {
     describe("getGithubAccessToken()", () => {
-        let mockAxios: any;
-        beforeAll(() => {
-            mockAxios = jest.genMockFromModule('axios');
-            mockAxios.create = jest.fn(() => mockAxios);
-        });
 
         it('should return meaningful error response if getAccessToken returns error with status code less than 400', () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
@@ -62,15 +59,13 @@ describe("GithubAuthController unit tests", () => {
 
 describe("GithubAuthRepository unit tests", () => {
     describe("getAccessToken()", () => {
-        let mockAxios: any;
-        beforeAll(() => {
-            mockAxios = jest.genMockFromModule('axios');
-        });
 
         it('should return error and status code if the get requests fails with rejected promise', () => {
             mockAxios.mockImplementationOnce(() => Promise.reject({
-                status: 400,
-                error: new Error("Server responded with an error"),
+                response: {
+                    status: 400,
+                    data: {},
+                }
             }));
     
             let githubAuthRepository: GithubAuthRepository = new GithubAuthRepositoryImpl(mockAxios);

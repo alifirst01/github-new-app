@@ -5,7 +5,7 @@
             h1.f5.f4-ns {{loadingMessage.m1}}
             h3.f6.f5-ns(v-if="'m2' in loadingMessage") {{loadingMessage.m2}}
         #trending-error.pv6.red(v-else-if=("loading==1"))
-            p.red.center.w-50-ns {{loadingMessage.m1}} 
+            p.red.center.w-60-ns {{loadingMessage.m1}} 
         #trending-content(v-else)
             h1.f2.f1-ns GitHub Trending repos
             h3.f4.f3-ns.ma0.mt3 Explore the top starred Typescript public repositories in the past 24 hours.
