@@ -16,7 +16,7 @@ describe("TrendingController unit tests", () => {
                 error: new Error,
             });
             let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
-            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios.create());
+            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
             trendingRepositoryStub.getRepos = getReposMock;
             
             var expected = {
@@ -32,7 +32,7 @@ describe("TrendingController unit tests", () => {
                 error: new Error("Internal Server Error"),
             });
             let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
-            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios.create());
+            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
             trendingRepositoryStub.getRepos = getReposMock;
             
             var expected = {
@@ -55,7 +55,7 @@ describe("TrendingController unit tests", () => {
                 response: [testRepo]
             });
             let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
-            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios.create());
+            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
             trendingRepositoryStub.getRepos = getReposMock;
 
             var expected = {
