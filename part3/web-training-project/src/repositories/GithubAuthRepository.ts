@@ -25,7 +25,7 @@ export default class GithubAuthRepositoryImpl implements GithubAuthRepository{
         }).catch(error => {
             return Promise.resolve({
                 statusCode: error.status,
-                error: error,
+                error: error.error,
             });
         });
 

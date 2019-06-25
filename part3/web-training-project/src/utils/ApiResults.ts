@@ -15,6 +15,6 @@ interface GetIssuesResult {
 }
 
 interface GetGithubAuthResult{
-    accessToken: string
+    accessToken?: string
     error?: Error
 }

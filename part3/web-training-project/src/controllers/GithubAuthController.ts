@@ -9,7 +9,7 @@ export default class GithubAuthController{
         return this.githubAuthRepository.getAccessToken(accessCode).then((networkResult: HttpNetworkRequestResult) => {
             let result: GetGithubAuthResult;
             if (networkResult.error){
-                if(networkResult.statusCode >= 500)
+                if(networkResult.statusCode! >= 500)
                     result = {
                         error: new Error("Sorry, server is down. Check back later and try again.")
                     }
