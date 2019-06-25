@@ -6,8 +6,11 @@ var axios = require('axios');
 var MockAdapter = require('axios-mock-adapter');
 var mock = new MockAdapter(axios);
 
-describe("Trending Feature integration tests", () => {
-    afterEach(() => {
+describe("Trending Feature integration tests", () => {    
+    let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(axios.create({}));
+    let trendingController = new TrendingController(trendingRepository);
+
+    beforeEach(() => {
         mock.reset();
     });
 
@@ -33,9 +36,6 @@ describe("Trending Feature integration tests", () => {
                 }
             }]
         });
-    
-        let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(axios.create({}));
-        let trendingController = new TrendingController(trendingRepository);
 
         var expected = {
             repos: [testRepo] 
@@ -45,12 +45,20 @@ describe("Trending Feature integration tests", () => {
 
     it("When get request fails due to network error, controller's getTrendingRepos should return error specifying 'system is down'", () => {
         mock.onGet().networkError();
-    
-        let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(axios.create({}));
-        let trendingController = new TrendingController(trendingRepository);
 
         var expected = {
             error: new Error("Sorry, system is down. Check back later and try again.")
+        }
+        expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+    });
+
+    it("When get request fails and server returns an error with a status code, controller's getTrendingRepos should return error with message for the user", () => {
+        mock.onGet().reply(400, {
+            message: 'Server responds with an error',
+        });
+        
+        var expected = {
+            error: new Error("An error occurred while fetching the trending repositories from Github. Try again later....")
         }
         expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
     });
