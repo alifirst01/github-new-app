@@ -7,7 +7,7 @@ const mockAxios:any = jest.genMockFromModule('axios');
 describe("TrendingController unit tests", () => {
     describe("getTrendingRepos()", () => {
         
-        it('should return meaningful error response if getTrendingRepos returns error with status code less than 400', () => {
+        it('should return meaningful error response if getTrendingRepos returns error with status code less than 500', () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
                 statusCode: 400, 
                 error: new Error,
