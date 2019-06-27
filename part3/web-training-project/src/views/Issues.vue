@@ -30,16 +30,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import axios from 'axios';
-import store from '@/store';
-import router from '@/router';
-import Component from 'vue-class-component'
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
-import IssuesController from '@/controllers/IssuesController'
-import IssuesRepositoryImpl from '@/repositories/IssuesRepository'
-import GithubAuthController from '@/controllers/GithubAuthController'
-import GithubAuthRepositoryImpl from '@/repositories/GithubAuthRepository'
+import Vue from "vue"
+import axios from "axios"
+import store from "@/store"
+import router from "@/router"
+import Component from "vue-class-component"
+import PulseLoader from "vue-spinner/src/PulseLoader.vue"
+import IssuesController from "@/controllers/IssuesController"
+import IssuesRepositoryImpl from "@/repositories/IssuesRepository"
+import GithubAuthController from "@/controllers/GithubAuthController"
+import GithubAuthRepositoryImpl from "@/repositories/GithubAuthRepository"
 
 Component.registerHooks([
     'beforeRouteEnter',
@@ -51,17 +51,17 @@ Component.registerHooks([
         PulseLoader,
     }
 })
-export default class Issues extends Vue{ 
+export default class Issues extends Vue { 
     issues: Issue[] = [];
-    loading:number = 0;
-    loadingMsg:Object = {};
-    issuesController:IssuesController = new IssuesController(new IssuesRepositoryImpl(axios.create({})))
-    githubAuthController:GithubAuthController = new GithubAuthController(new GithubAuthRepositoryImpl(axios.create({})))
+    loading: number = 0;
+    loadingMsg: Object = {};
+    issuesController: IssuesController = new IssuesController(new IssuesRepositoryImpl(axios.create({})))
+    githubAuthController: GithubAuthController = new GithubAuthController(new GithubAuthRepositoryImpl(axios.create({})))
 
-    beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to: any, from: any, next: any) {
         var query = window.location.href;
         if (store.getters.isLoggedIn == false && !query.includes('code')){
-            router.push('/login');
+            router.push("/login");
             from();
         }
         next();
@@ -73,25 +73,26 @@ export default class Issues extends Vue{
             this.getAllUserIssues();
         }
         else{
-            var code = query.split('?')[1].split('=')[1];
+            var code = query.split("?")[1].split('=')[1];
             this.getGithubAccessToken(code).then(accessToken => {
-                this.$store.dispatch('setCode', accessToken);
+                this.$store.dispatch("setCode", accessToken);
                 this.$Progress.finish();
                 this.getAllUserIssues();
             });
         }
     }
 
-    async getGithubAccessToken(accessCode):Promise<string>{
+    async getGithubAccessToken(accessCode: string): Promise<string> {
         this.loading = 0;
         this.loadingMsg = {m1: "Finishing GitHub login", m2: "It should only be a second or two…"};
         this.$Progress.start();
 
-        return await this.githubAuthController.getGithubAccessToken(accessCode).then((tokenResult: GetGithubAuthResult) => {
+        return await this.githubAuthController.getGithubAccessToken(accessCode)
+        .then((tokenResult: GetGithubAuthResult) => {
             if (tokenResult.error){
                 this.$Progress.fail();
                 alert(tokenResult.error.message);
-                this.$router.push('/login');
+                this.$router.push("/login");
             }
             else{
                 this.loading = 1;
@@ -100,7 +101,7 @@ export default class Issues extends Vue{
         })
     }
 
-    async getAllUserIssues(){
+    async getAllUserIssues() {
         this.loading = 2;
         this.loadingMsg = {m1: "Fetching issues from public repositories"};
         return await this.issuesController.getUserIssues().then((issuesResult: GetIssuesResult) => {
@@ -115,9 +116,9 @@ export default class Issues extends Vue{
         });
     }
 
-    logout(){
-        this.$store.dispatch('setCode', null);
-        this.$router.push('/login');
+    logout() {
+        this.$store.dispatch("setCode", null);
+        this.$router.push("/login");
     }
 }
 </script>

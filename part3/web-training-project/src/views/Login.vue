@@ -10,16 +10,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import axios from 'axios'
+import { Component, Vue, Prop } from "vue-property-decorator"
+import axios from "axios"
 
 @Component
-export default class Login extends Vue{
-    redirectgithubLogin(){
+export default class Login extends Vue {
+    redirectgithubLogin() {
         var url = window.location.href.split('/login')[0];
-        var params = {
+        var params: Object = {
             "client_id": "5924f82128dc0c6d3ab7",
-            "redirect_uri": url + '/issues'
+            "redirect_uri": url + "/issues"
         }
         var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
         var redirectUrl = "https://github.com/login/oauth/authorize?" + queryString;

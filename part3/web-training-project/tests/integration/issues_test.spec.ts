@@ -1,9 +1,9 @@
-import IssuesRepository from "@/repositories/IssuesRepository";
-import IssuesController from '@/controllers/IssuesController';
-import IssuesRepositoryImpl from '@/repositories/IssuesRepository';
+import IssuesRepository from "@/repositories/IssuesRepository"
+import IssuesController from "@/controllers/IssuesController"
+import IssuesRepositoryImpl from "@/repositories/IssuesRepository"
 
-var axios = require('axios');
-var MockAdapter = require('axios-mock-adapter');
+var axios = require("axios");
+var MockAdapter = require("axios-mock-adapter");
 var mock = new MockAdapter(axios);
 
 describe("Issues Feature integration tests", () => {
@@ -23,7 +23,7 @@ describe("Issues Feature integration tests", () => {
         }; 
         mock
             .onGet().replyOnce(200, {
-                login: 'foo',
+                login: "foo",
             })
             .onGet().replyOnce(200, [{
                 name: "baz",
@@ -31,10 +31,10 @@ describe("Issues Feature integration tests", () => {
             }])
             .onGet().replyOnce(200, 
                 [{
-                    'html_url': 'foo@example',
-                    'title': 'foo',
-                    'user': {
-                        'login': 'bar',
+                    "html_url": "foo@example",
+                    "title": "foo",
+                    "user": {
+                        "login": "bar",
                     }
                 }]
             );
@@ -56,7 +56,7 @@ describe("Issues Feature integration tests", () => {
 
     it("When get request fails and server returns an error with a status code, controller's getUserIssues should return error with message for the user", () => {
         mock.onGet().reply(400, {
-            message: 'Server responds with an error',
+            message: "Server responds with an error",
         });
         
         var expected = {

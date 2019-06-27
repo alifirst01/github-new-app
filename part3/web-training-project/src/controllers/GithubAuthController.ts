@@ -1,11 +1,11 @@
-import GithubAuthRepository from "@/repositories/GithubAuthRepository";
+import GithubAuthRepository from "@/repositories/GithubAuthRepository"
 
 
-export default class GithubAuthController{
-    constructor(private githubAuthRepository: GithubAuthRepository){
+export default class GithubAuthController {
+    constructor(private githubAuthRepository: GithubAuthRepository) {
     }
 
-    async getGithubAccessToken(accessCode: string): Promise<GetGithubAuthResult>{
+    async getGithubAccessToken(accessCode: string): Promise<GetGithubAuthResult> {
         return this.githubAuthRepository.getAccessToken(accessCode).then((networkResult: HttpNetworkRequestResult) => {
             let result: GetGithubAuthResult;
             if (networkResult.error){

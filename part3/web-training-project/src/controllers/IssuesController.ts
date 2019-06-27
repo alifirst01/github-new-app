@@ -1,11 +1,11 @@
-import IssuesRepository from "@/repositories/IssuesRepository";
+import IssuesRepository from "@/repositories/IssuesRepository"
 
 
-export default class IssuesController{
-    constructor(private issuesRepository: IssuesRepository){
+export default class IssuesController {
+    constructor(private issuesRepository: IssuesRepository) {
     }
 
-    async getUserIssues(): Promise<GetIssuesResult>{
+    async getUserIssues(): Promise<GetIssuesResult> {
         return this.issuesRepository.getAllIssues().then((networkResult: HttpNetworkRequestResult) => {
             let result: GetIssuesResult;
             if (networkResult.error){

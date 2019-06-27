@@ -1,8 +1,8 @@
-import DateMixin from "@/mixins/DateMixin";
+import DateMixin from "@/mixins/DateMixin"
 
 describe("DateMixin unit tests", () => {
     describe("updateTimeDiff()", () => {
-        it('should set timeDiff to x hrs ago if lastUpdated is more than x hours ago', () => {
+        it("should set timeDiff to x hrs ago if lastUpdated is more than x hours ago", () => {
             let dateMixin: DateMixin = new DateMixin();
             
             dateMixin.lastUpdated = new Date();
@@ -14,7 +14,7 @@ describe("DateMixin unit tests", () => {
             expect(dateMixin.timeDiff).toEqual(expected);
         });
 
-        it('should set timeDiff to x mins ago if lastUpdated is more than x mins ago but less than an hour ago', () => {
+        it("should set timeDiff to x mins ago if lastUpdated is more than x mins ago but less than an hour ago", () => {
             let dateMixin: DateMixin = new DateMixin();
             
             dateMixin.lastUpdated = new Date();
@@ -26,7 +26,7 @@ describe("DateMixin unit tests", () => {
             expect(dateMixin.timeDiff).toEqual(expected);
         });
 
-        it('should set timeDiff to now if lastUpdated is less than a minute ago', () => {
+        it("should set timeDiff to now if lastUpdated is less than a minute ago", () => {
             let dateMixin: DateMixin = new DateMixin();
             
             dateMixin.lastUpdated = new Date();

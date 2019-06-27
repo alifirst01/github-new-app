@@ -1,13 +1,13 @@
-import TrendingRepository from "@/repositories/TrendingRepository";
-import TrendingController from '@/controllers/TrendingController';
-import TrendingRepositoryImpl from '@/repositories/TrendingRepository';
+import TrendingRepository from "@/repositories/TrendingRepository"
+import TrendingController from "@/controllers/TrendingController"
+import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
 
-const mockAxios:any = jest.genMockFromModule('axios');
+const mockAxios:any = jest.genMockFromModule("axios");
 
 describe("TrendingController unit tests", () => {
     describe("getTrendingRepos()", () => {
         
-        it('should return meaningful error response if getTrendingRepos returns error with status code less than 500', () => {
+        it("should return meaningful error response if getTrendingRepos returns error with status code less than 500", () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
                 statusCode: 400, 
                 error: new Error,
@@ -23,7 +23,7 @@ describe("TrendingController unit tests", () => {
             expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
         });
         
-        it('should return error specifying "system is down" if the status code is 500', () => {
+        it("should return error specifying 'system is down' if the status code is 500", () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
                 statusCode: 500, 
                 error: new Error("Internal Server Error"),
@@ -39,7 +39,7 @@ describe("TrendingController unit tests", () => {
             expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
         });
 
-        it('should return list of trending repos if the network request was successful', () => {
+        it("should return list of trending repos if the network request was successful", () => {
             let testRepo:Repo = {
                 name: "foo", 
                 url: "foo@example",
@@ -68,7 +68,7 @@ describe("TrendingController unit tests", () => {
 describe("TrendingRepository unit tests", () => {
     describe("getRepos()", () => {
 
-        it('should return error and status code if the get requests fails with rejected promise', () => {
+        it("should return error and status code if the get requests fails with rejected promise", () => {
             mockAxios.get.mockImplementationOnce(() => Promise.reject({
                 response: {
                     status: 400,
@@ -85,7 +85,7 @@ describe("TrendingRepository unit tests", () => {
             expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
         });
 
-        it('should return an error if the get requests returned a response but an error occurred during parsing of response', () => {
+        it("should return an error if the get requests returned a response but an error occurred during parsing of response", () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve({
                 data: {
                     items: [{
@@ -105,7 +105,7 @@ describe("TrendingRepository unit tests", () => {
             expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
         });
 
-        it('should return a response containing trendingRepos list if the get requests returns a response', () => {
+        it("should return a response containing trendingRepos list if the get requests returns a response", () => {
             let testRepo:Repo = {
                 name: "foo", 
                 url: "foo@example",

@@ -1,15 +1,18 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance } from "axios"
 
 interface TrendingRepository{
-    getRepos():Promise<GetReposResult>;
+    getRepos(): Promise<GetReposResult>;
 }
 
-export default class TrendingRepositoryImpl implements TrendingRepository{
-    constructor(private axios: AxiosInstance){
+export default class TrendingRepositoryImpl implements TrendingRepository {
+    constructor(private axios: AxiosInstance) {
     }
-    
-    getRepos():Promise<HttpNetworkRequestResult>  {
-        var url = 'https://api.github.com/search/repositories';
+
+    /**
+     * Get the top starred Typescript public repositories in the past 24 hours.
+     */
+    getRepos(): Promise<HttpNetworkRequestResult> {
+        var url = "https://api.github.com/search/repositories";
         var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
         let params = {
             'q': 'typescript',
@@ -37,7 +40,7 @@ export default class TrendingRepositoryImpl implements TrendingRepository{
                     response: trendingRepos
                 });
             } catch (error) {
-                throw error
+                throw error;
             }
             
         })

@@ -1,9 +1,9 @@
-import TrendingRepository from "@/repositories/TrendingRepository";
-import TrendingController from '@/controllers/TrendingController';
-import TrendingRepositoryImpl from '@/repositories/TrendingRepository';
+import TrendingRepository from "@/repositories/TrendingRepository"
+import TrendingController from "@/controllers/TrendingController"
+import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
 
-var axios = require('axios');
-var MockAdapter = require('axios-mock-adapter');
+var axios = require("axios");
+var MockAdapter = require("axios-mock-adapter");
 var mock = new MockAdapter(axios);
 
 describe("Trending Feature integration tests", () => {    
@@ -26,13 +26,13 @@ describe("Trending Feature integration tests", () => {
         
         mock.onGet().reply(200, {
             items: [{
-                'html_url': 'foo@test',
-                'name': 'foo',
-                'description': 'bar',
-                'owner': {
-                    'login': 'baz',
-                    'html_url': 'baz@test',
-                    'avatar_url': 'avatar@test',
+                "html_url": "foo@test",
+                "name": "foo",
+                "description": "bar",
+                "owner": {
+                    "login": "baz",
+                    "html_url": "baz@test",
+                    "avatar_url": "avatar@test",
                 }
             }]
         });
@@ -54,7 +54,7 @@ describe("Trending Feature integration tests", () => {
 
     it("When get request fails and server returns an error with a status code, controller's getTrendingRepos should return error with message for the user", () => {
         mock.onGet().reply(400, {
-            message: 'Server responds with an error',
+            message: "Server responds with an error",
         });
         
         var expected = {

@@ -1,12 +1,15 @@
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import Vue from "vue"
+import Component from "vue-class-component"
 
 @Component
 export default class DateMixin extends Vue {
     timeDiff:string = ""
     lastUpdated:Date = new Date()
 
-    updateTimeDiff(){
+    /**
+     * Update the string timeDiff using the last updated date&time and the current date&time
+     */
+    updateTimeDiff() {
         var seconds = Math.floor((<any>new Date() - <any>this.lastUpdated) / 1000);
         var minutes = Math.floor(seconds / 60);
         var hours = Math.floor(minutes / 60);

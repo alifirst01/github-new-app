@@ -1,16 +1,19 @@
-import { AxiosInstance } from 'axios';
-import store from '@/store';
+import { AxiosInstance } from "axios";
+import store from "@/store";
 
 interface IssuesRepository{
-    getAllIssues():Promise<HttpNetworkRequestResult>;
+    getAllIssues(): Promise<HttpNetworkRequestResult>;
 }
 
-export default class IssuesRepositoryImpl implements IssuesRepository{
-    constructor(private axios: AxiosInstance){
+export default class IssuesRepositoryImpl implements IssuesRepository {
+    constructor(private axios: AxiosInstance) {
     }
 
-    async getIssuesFromRepo(headers: Object, params: Object, repo: any): Promise<any>{
-        let repoName = repo.name;     
+    /**
+     * Get user issues from the given repository.
+     */
+    async getIssuesFromRepo(headers: Object, params: Object, repo: any): Promise<any> {
+        let repoName = repo.name;
         let repoIssuesUrl = repo.issues_url.split('{')[0];
         let userIssues: Issue[] = [];
 
@@ -46,11 +49,13 @@ export default class IssuesRepositoryImpl implements IssuesRepository{
         });
     }
 
+    /**
+     * Get all issues which have been assigned to user OR created by user in the public repositories present in user's github account.
+     */
     async getAllIssues(): Promise<HttpNetworkRequestResult> {
         var accessToken = store.getters.code;
         var url = 'https://api.github.com/user';
         var headers = {'Authorization': 'token ' + accessToken};
-        
         return await this.axios.get(url, {
             headers: headers
         })

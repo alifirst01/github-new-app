@@ -1,10 +1,10 @@
-import TrendingRepository from "@/repositories/TrendingRepository";
+import TrendingRepository from "@/repositories/TrendingRepository"
 
-export default class TrendingController{
-    constructor(private trendingRepository: TrendingRepository){
+export default class TrendingController {
+    constructor(private trendingRepository: TrendingRepository) {
     }
 
-    async getTrendingRepos(): Promise<GetReposResult>{
+    async getTrendingRepos(): Promise<GetReposResult> {
         return this.trendingRepository.getRepos().then((networkResult: HttpNetworkRequestResult) => {
             let result: GetReposResult;
             if (networkResult.error){

@@ -1,13 +1,13 @@
-import IssuesRepository from "@/repositories/IssuesRepository";
-import IssuesRepositoryImpl from "@/repositories/IssuesRepository";
-import IssuesController from '@/controllers/IssuesController';
+import IssuesRepository from "@/repositories/IssuesRepository"
+import IssuesRepositoryImpl from "@/repositories/IssuesRepository"
+import IssuesController from '@/controllers/IssuesController'
 
-const mockAxios:any = jest.genMockFromModule('axios');
+const mockAxios:any = jest.genMockFromModule("axios");
 
 describe("IssuesController unit tests", () => {
     describe("getUserIssues()", () => {
 
-        it('should return meaningful error response if getUserIssues returns error with status code less than 400', () => {
+        it("should return meaningful error response if getUserIssues returns error with status code less than 400", () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
                 statusCode: 400, 
                 error: new Error,
@@ -23,7 +23,7 @@ describe("IssuesController unit tests", () => {
             expect(issuesController.getUserIssues()).resolves.toStrictEqual(expected);
         });
         
-        it('should return error specifying "system is down" if the status code is 500', () => {
+        it("should return error specifying 'system is down' if the status code is 500", () => {
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
                 statusCode: 500, 
                 error: new Error("Internal Server Error"),
@@ -39,7 +39,7 @@ describe("IssuesController unit tests", () => {
             expect(issuesController.getUserIssues()).resolves.toStrictEqual(expected);
         });
 
-        it('should return list of issues if the network request was successful', () => {
+        it("should return list of issues if the network request was successful", () => {
             let testIssue:Issue = {
                 url: "foo@example",
                 title: "bar",
@@ -59,14 +59,13 @@ describe("IssuesController unit tests", () => {
             let issuesController = new IssuesController(issuesRepositoryStub);
             expect(issuesController.getUserIssues()).resolves.toStrictEqual(expected);
         });
-        
     });
 });
 
 describe("IssuesRepository unit tests", () => {
     describe("getAllIssues()", () => {
 
-        it('should return error and status code if the "/user" get requests fails', () => {
+        it("should return error and status code if the '/user' get requests fails", () => {
             mockAxios.get.mockImplementationOnce(() => Promise.reject({
                 response: {
                     status: 400,
@@ -83,7 +82,7 @@ describe("IssuesRepository unit tests", () => {
             expect(issuesRepository.getAllIssues()).resolves.toStrictEqual(expected);
         });
 
-        it('should return error and status code if "/users/:owner/repos" get request fails', () => {
+        it("should return error and status code if '/users/:owner/repos' get request fails", () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve({
                 data: {
                     login: "foo",
@@ -106,7 +105,7 @@ describe("IssuesRepository unit tests", () => {
             expect(issuesRepository.getAllIssues()).resolves.toStrictEqual(expected);
         });
 
-        it('should return empty issues array if "/repos/:owner/:repo/issues" get request fails', () => {
+        it("should return empty issues array if '/repos/:owner/:repo/issues' get request fails", () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve({
                 data: {
                     login: "foo",
@@ -135,7 +134,7 @@ describe("IssuesRepository unit tests", () => {
             expect(issuesRepository.getAllIssues()).resolves.toStrictEqual(expected);
         });
 
-        it('should return a response containing list of user issues if all get requests are successful', () => {
+        it("should return a response containing list of user issues if all get requests are successful", () => {
             let testIssue:Issue = {
                 title: "foo", 
                 url: "foo@example",

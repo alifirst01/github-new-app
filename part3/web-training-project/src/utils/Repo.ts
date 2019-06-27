@@ -1,3 +1,6 @@
+/**
+  * Interface to store a github repository information
+*/
 interface Repo {
     url: string,
     name: string,

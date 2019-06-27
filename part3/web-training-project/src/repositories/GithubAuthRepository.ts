@@ -1,13 +1,16 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance } from "axios"
 
-interface GithubAuthRepository{
-    getAccessToken(accessCode: string):Promise<HttpNetworkRequestResult>;
+interface GithubAuthRepository {
+    getAccessToken(accessCode: string): Promise<HttpNetworkRequestResult>;
 }
 
-export default class GithubAuthRepositoryImpl implements GithubAuthRepository{
+export default class GithubAuthRepositoryImpl implements GithubAuthRepository {
     constructor(private axios: AxiosInstance){
     }
 
+    /**
+     * Get access token from github OAuth service using the access code.
+     */
     getAccessToken(accessCode: string): Promise<HttpNetworkRequestResult> {
         var url = "https://github-app-login.foundersclubsoftware.now.sh/auth";
         return this.axios({

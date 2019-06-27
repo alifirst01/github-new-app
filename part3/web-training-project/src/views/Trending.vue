@@ -21,12 +21,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-property-decorator";
-import TrendingController from "@/controllers/TrendingController";
-import TrendingRepositoryImpl from "@/repositories/TrendingRepository";
+import { Component, Watch, Vue } from "vue-property-decorator"
+import TrendingController from "@/controllers/TrendingController"
+import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
 import RepoListItem from "@/components/RepoListItem.vue"
-import DateMixin from "@/mixins/DateMixin";
-import axios from 'axios';
+import DateMixin from "@/mixins/DateMixin"
+import axios from "axios"
 
 @Component({
     name: "trending",
@@ -35,18 +35,18 @@ import axios from 'axios';
         RepoListItem,
     }
 })
-export default class Trending extends Vue{
-    timer:any = ""
-    loading:number = 0
-    loadingMessage:Object = {}
-    trendingRepos:Array<Object> = []
-    controller:TrendingController = new TrendingController(new TrendingRepositoryImpl(axios.create({})))
+export default class Trending extends Vue {
+    timer: any = ""
+    loading: number = 0
+    loadingMessage: Object = {}
+    trendingRepos: Array<Object> = []
+    controller: TrendingController = new TrendingController(new TrendingRepositoryImpl(axios.create({})))
 
     created(){
         this.timer = setInterval(this.updateTimeDiff, 65000);
     }
 
-    beforeMount(){
+    beforeMount() {
         this.getTrendingRepos();
     }
 
@@ -55,7 +55,7 @@ export default class Trending extends Vue{
     }
 
     @Watch('lastUpdated', { immediate: true })
-    onChange(val, oldVal){ this.updateTimeDiff() }
+    onChange(val: any, oldVal: any){ this.updateTimeDiff() }
 
     async getTrendingRepos(): Promise<void> {
         this.loading = 0;
@@ -73,7 +73,7 @@ export default class Trending extends Vue{
                 this.$Progress.finish();
                 this.lastUpdated = new Date();
             }
-        })
+        });
     }
 };
 </script>
