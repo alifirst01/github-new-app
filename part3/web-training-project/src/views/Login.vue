@@ -17,7 +17,7 @@ import axios from "axios"
 export default class Login extends Vue {
     redirectgithubLogin() {
         var url = window.location.href.split('/login')[0];
-        var params: Object = {
+        var params: any = {
             "client_id": "5924f82128dc0c6d3ab7",
             "redirect_uri": url + "/issues"
         }

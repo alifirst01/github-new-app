@@ -82,7 +82,7 @@ export default class Issues extends Vue {
         }
     }
 
-    async getGithubAccessToken(accessCode: string): Promise<string> {
+    async getGithubAccessToken(accessCode: string): Promise<any> {
         this.loading = 0;
         this.loadingMsg = {m1: "Finishing GitHub login", m2: "It should only be a second or two…"};
         this.$Progress.start();

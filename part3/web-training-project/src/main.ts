@@ -2,8 +2,8 @@ import Vue from "vue"
 import App from "./App.vue"
 import router from "./router"
 import store from "./store"
-import VueProgressBar from "vue-progressbar"
 
+const VueProgressBar = require("vue-progressbar");
 Vue.config.productionTip = false;
 
 
@@ -24,6 +24,7 @@ const options = {
 Vue.use(VueProgressBar, options)
 
 new Vue({
+  ...App,
   router,
   store,
   render: h => h(App)

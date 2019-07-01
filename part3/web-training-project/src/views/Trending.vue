@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-property-decorator"
+import { Component, Watch, Vue, Mixins } from "vue-property-decorator"
 import TrendingController from "@/controllers/TrendingController"
 import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
 import RepoListItem from "@/components/RepoListItem.vue"
@@ -30,12 +30,12 @@ import axios from "axios"
 
 @Component({
     name: "trending",
-    mixins: [DateMixin],
+    // mixins: [DateMixin],
     components: {
         RepoListItem,
     }
 })
-export default class Trending extends Vue {
+export default class Trending extends Mixins(DateMixin) {
     timer: any = ""
     loading: number = 0
     loadingMessage: Object = {}
