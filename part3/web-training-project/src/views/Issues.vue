@@ -62,7 +62,6 @@ export default class Issues extends Vue {
         var query = window.location.href;
         if (store.getters.isLoggedIn == false && !query.includes('code')){
             router.push("/login");
-            from();
         }
         next();
     }

@@ -10,8 +10,14 @@
     "tests": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-solid-svg-icons": "^5.9.0",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
     "axios": "^0.19.0",
+    "body-parser": "*",
     "core-js": "^2.6.5",
+    "cors": "^2.8.5",
+    "express": "*",
     "tachyons-sass": "^4.9.5",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
