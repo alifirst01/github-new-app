@@ -3,6 +3,12 @@ import TrendingController from "@/controllers/TrendingController"
 import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
 
 const mockAxios:any = jest.genMockFromModule("axios");
+const queryParams: SearchQueryParams = {
+    keywords: ["test-keyword"],
+    sortBy: "test-sort",
+    orderBy: "test-order",
+    lastUpdated: new Date
+}
 
 describe("TrendingController unit tests", () => {
     describe("getTrendingRepos()", () => {
@@ -20,7 +26,7 @@ describe("TrendingController unit tests", () => {
                 error: new Error("An error occurred while fetching the trending repositories from Github. Try again later....")
             }
             let trendingController = new TrendingController(trendingRepositoryStub);
-            expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+            expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
         });
         
         it("should return error specifying 'system is down' if the status code is 500", () => {
@@ -36,7 +42,7 @@ describe("TrendingController unit tests", () => {
                 error: new Error("Sorry, system is down. Check back later and try again.")
             }
             let trendingController = new TrendingController(trendingRepositoryStub);
-            expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+            expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
         });
 
         it("should return list of trending repos if the network request was successful", () => {
@@ -59,7 +65,7 @@ describe("TrendingController unit tests", () => {
                 repos: [testRepo] 
             }
             let trendingController = new TrendingController(trendingRepositoryStub);
-            expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+            expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
         });
         
     });
@@ -82,7 +88,7 @@ describe("TrendingRepository unit tests", () => {
                 statusCode: 400,
                 error: new Error("Server responded with an error"),
             }
-            expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
+            expect(trendingRepository.getRepos(queryParams)).resolves.toStrictEqual(expected);
         });
 
         it("should return an error if the get requests returned a response but an error occurred during parsing of response", () => {
@@ -102,7 +108,7 @@ describe("TrendingRepository unit tests", () => {
                 statusCode: 500,
                 error: new Error("Cannot read property 'login' of undefined"),
             };
-            expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
+            expect(trendingRepository.getRepos(queryParams)).resolves.toStrictEqual(expected);
         });
 
         it("should return a response containing trendingRepos list if the get requests returns a response", () => {
@@ -134,7 +140,7 @@ describe("TrendingRepository unit tests", () => {
             var expected: HttpNetworkRequestResult = {
                 response: [testRepo]
             }
-            expect(trendingRepository.getRepos()).resolves.toStrictEqual(expected);
+            expect(trendingRepository.getRepos(queryParams)).resolves.toStrictEqual(expected);
         });
     });
 });

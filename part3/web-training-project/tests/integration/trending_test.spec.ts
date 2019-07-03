@@ -5,6 +5,12 @@ import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
 var axios = require("axios");
 var MockAdapter = require("axios-mock-adapter");
 var mock = new MockAdapter(axios);
+const queryParams: SearchQueryParams = {
+    keywords: ["test-keyword"],
+    sortBy: "test-sort",
+    orderBy: "test-order",
+    lastUpdated: new Date
+}
 
 describe("Trending Feature integration tests", () => {    
     let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(axios.create({}));
@@ -40,7 +46,7 @@ describe("Trending Feature integration tests", () => {
         var expected = {
             repos: [testRepo] 
         }
-        expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+        expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
     });
 
     it("When get request fails due to network error, controller's getTrendingRepos should return error specifying 'system is down'", () => {
@@ -49,7 +55,7 @@ describe("Trending Feature integration tests", () => {
         var expected = {
             error: new Error("Sorry, system is down. Check back later and try again.")
         }
-        expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+        expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
     });
 
     it("When get request fails and server returns an error with a status code, controller's getTrendingRepos should return error with message for the user", () => {
@@ -60,6 +66,6 @@ describe("Trending Feature integration tests", () => {
         var expected = {
             error: new Error("An error occurred while fetching the trending repositories from Github. Try again later....")
         }
-        expect(trendingController.getTrendingRepos()).resolves.toStrictEqual(expected);
+        expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
     });
 })
