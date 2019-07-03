@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios"
 
 interface TrendingRepository{
-    getRepos(): Promise<GetReposResult>;
+    getRepos(queryParams: SearchQueryParams): Promise<GetReposResult>;
 }
 
 export default class TrendingRepositoryImpl implements TrendingRepository {
@@ -11,18 +11,21 @@ export default class TrendingRepositoryImpl implements TrendingRepository {
     /**
      * Get the top starred Typescript public repositories in the past 24 hours.
      */
-    getRepos(): Promise<HttpNetworkRequestResult> {
+    getRepos(queryParams: SearchQueryParams): Promise<HttpNetworkRequestResult> {
         var url = "https://api.github.com/search/repositories";
-        var yesterday = new Date(new Date().getTime() - (24 * 60 * 60 * 1000));
         let params = {
-            'q': 'typescript',
-            'sort': 'stars',
-            'order': 'desc',
-            'pushed': yesterday + '..*',
+            'q': "topic:" + queryParams.keywords.join(" topic:"),
+            ...((queryParams.sortBy != "") && {'sort': queryParams.sortBy}),
+            ...((queryParams.orderBy != "") && {'order': queryParams.orderBy}),
+            ...(((<any>new Date() - <any>queryParams.lastUpdated) / 3600000) > 24 && {'pushed': queryParams.lastUpdated + '..*'}),
         };
+        var headers: Object = {};
+        if(queryParams.keywords.length > 1)
+            headers = {"Accept": "application/vnd.github.mercy-preview+json"}
         
         return this.axios.get(url, {
-            params: params
+            params: params,
+            headers: headers,
         }).then(response => {
             try {
                 var trendingRepos: Repo[] = [];

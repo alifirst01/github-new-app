@@ -4,8 +4,8 @@ export default class TrendingController {
     constructor(private trendingRepository: TrendingRepository) {
     }
 
-    async getTrendingRepos(): Promise<GetReposResult> {
-        return this.trendingRepository.getRepos().then((networkResult: HttpNetworkRequestResult) => {
+    async getTrendingRepos(queryParams: SearchQueryParams): Promise<GetReposResult> {
+        return this.trendingRepository.getRepos(queryParams).then((networkResult: HttpNetworkRequestResult) => {
             let result: GetReposResult;
             if (networkResult.error){
                 if(networkResult.statusCode! >= 500)
