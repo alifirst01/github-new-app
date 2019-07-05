@@ -6,4 +6,5 @@ interface SearchQueryParams {
     sortBy: string,
     orderBy: string,
     lastUpdated: Date, 
+    pageNum: number,
 }

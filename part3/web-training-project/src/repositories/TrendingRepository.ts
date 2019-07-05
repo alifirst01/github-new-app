@@ -18,6 +18,7 @@ export default class TrendingRepositoryImpl implements TrendingRepository {
             ...((queryParams.sortBy != "") && {'sort': queryParams.sortBy}),
             ...((queryParams.orderBy != "") && {'order': queryParams.orderBy}),
             ...(((<any>new Date() - <any>queryParams.lastUpdated) / 3600000) > 24 && {'pushed': queryParams.lastUpdated + '..*'}),
+            'page': queryParams.pageNum,
         };
         var headers: Object = {};
         if(queryParams.keywords.length > 1)
@@ -28,7 +29,9 @@ export default class TrendingRepositoryImpl implements TrendingRepository {
             headers: headers,
         }).then(response => {
             try {
-                var trendingRepos: Repo[] = [];
+                let no_of_pages = Number(response.headers.link.split("page=").pop().split(">")[0]);
+                let trendingRepos: Repo[] = [];
+
                 response.data.items.forEach((item: any) => {
                     trendingRepos.push({
                         url: item.html_url,
@@ -39,8 +42,12 @@ export default class TrendingRepositoryImpl implements TrendingRepository {
                         avatarUrl: item.owner.avatar_url,
                     });
                 });
+                var result: any = {
+                    trendingRepos: trendingRepos,
+                    no_of_pages: no_of_pages,
+                }
                 return Promise.resolve({
-                    response: trendingRepos
+                    response: result
                 });
             } catch (error) {
                 throw error;

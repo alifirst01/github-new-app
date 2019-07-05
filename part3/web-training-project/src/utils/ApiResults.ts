@@ -12,6 +12,7 @@ interface HttpNetworkRequestResult {
 */
 interface GetReposResult {
     repos?: Repo[]
+    no_of_pages?: number
     error?: Error 
 }
 

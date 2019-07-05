@@ -2,6 +2,7 @@ import Vue from "vue"
 import App from "./App.vue"
 import router from "./router"
 import store from "./store"
+import Paginate from "vuejs-paginate"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlusSquare, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -10,6 +11,7 @@ const VueProgressBar = require("vue-progressbar");
 
 library.add(faPlusSquare, faTimesCircle) 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('paginate', Paginate)
 
 Vue.config.productionTip = false;
 

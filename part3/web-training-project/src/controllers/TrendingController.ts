@@ -19,7 +19,8 @@ export default class TrendingController {
             }
             else{
                 result = { 
-                    repos: networkResult.response
+                    repos: networkResult.response.trendingRepos,
+                    no_of_pages: networkResult.response.no_of_pages,
                 }
             }
             return Promise.resolve(result);
