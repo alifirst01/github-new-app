@@ -7,7 +7,8 @@ const queryParams: SearchQueryParams = {
     keywords: ["test-keyword"],
     sortBy: "test-sort",
     orderBy: "test-order",
-    lastUpdated: new Date
+    lastUpdated: new Date,
+    pageNum: 1
 }
 
 describe("TrendingController unit tests", () => {
