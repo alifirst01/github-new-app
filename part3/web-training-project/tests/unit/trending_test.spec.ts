@@ -30,21 +30,21 @@ describe("TrendingController unit tests", () => {
             expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
         });
         
-        it("should return error specifying 'system is down' if the status code is 500", () => {
-            var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
-                statusCode: 500, 
-                error: new Error("Internal Server Error"),
-            });
-            let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
-            let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
-            trendingRepositoryStub.getRepos = getReposMock;
-            
-            var expected = {
-                error: new Error("Sorry, system is down. Check back later and try again.")
-            }
-            let trendingController = new TrendingController(trendingRepositoryStub);
-            expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
-        });
+it("should return error specifying 'system is down' if the status code is 500", () => {
+    var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
+        statusCode: 500, 
+        error: new Error("Internal Server Error"),
+    });
+    let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
+    let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
+    trendingRepositoryStub.getRepos = getReposMock;
+    
+    var expected = {
+        error: new Error("Sorry, system is down. Check back later and try again.")
+    }
+    let trendingController = new TrendingController(trendingRepositoryStub);
+    expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
+});
 
         it("should return list of trending repos if the network request was successful", () => {
             let testRepo:Repo = {
@@ -56,14 +56,18 @@ describe("TrendingController unit tests", () => {
                 avatarUrl: "avatar@example"
             }; 
             var networkRequestResultStub: Promise<HttpNetworkRequestResult> = Promise.resolve({
-                response: [testRepo]
+                response: {
+                    trendingRepos: [testRepo],
+                    no_of_pages: 1
+                }
             });
             let getReposMock = jest.fn().mockReturnValueOnce(networkRequestResultStub);
             let trendingRepositoryStub: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
             trendingRepositoryStub.getRepos = getReposMock;
 
             var expected = {
-                repos: [testRepo] 
+                repos: [testRepo],
+                no_of_pages: 1
             }
             let trendingController = new TrendingController(trendingRepositoryStub);
             expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
@@ -101,6 +105,9 @@ describe("TrendingRepository unit tests", () => {
                         'description': 'bar',
                     }]
                 },
+                headers: {
+                    link: "<page=1>"
+                },
             }));
     
             let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
@@ -134,12 +141,18 @@ describe("TrendingRepository unit tests", () => {
                         }
                     }]
                 },
+                headers: {
+                    link: "<page=1>"
+                },
             }));
     
             let trendingRepository: TrendingRepository = new TrendingRepositoryImpl(mockAxios);
             
             var expected: HttpNetworkRequestResult = {
-                response: [testRepo]
+                response: {
+                    "trendingRepos": [testRepo],
+                    "no_of_pages": 1,
+                }
             }
             expect(trendingRepository.getRepos(queryParams)).resolves.toStrictEqual(expected);
         });

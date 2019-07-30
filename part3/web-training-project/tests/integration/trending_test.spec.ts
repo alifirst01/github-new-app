@@ -31,21 +31,27 @@ describe("Trending Feature integration tests", () => {
             avatarUrl: "avatar@test"
         };
         
-        mock.onGet().reply(200, {
-            items: [{
-                "html_url": "foo@test",
-                "name": "foo",
-                "description": "bar",
-                "owner": {
-                    "login": "baz",
-                    "html_url": "baz@test",
-                    "avatar_url": "avatar@test",
-                }
-            }]
-        });
+        mock.onGet().reply(200, 
+            {                                   //data
+                items: [{
+                    "html_url": "foo@test",
+                    "name": "foo",
+                    "description": "bar",
+                    "owner": {
+                        "login": "baz",
+                        "html_url": "baz@test",
+                        "avatar_url": "avatar@test",
+                    }
+                }]
+            },
+            {                                   //headers
+                link: "<page=1>"
+            },
+        );
 
         var expected = {
-            repos: [testRepo] 
+            repos: [testRepo],
+            no_of_pages: 1
         }
         expect(trendingController.getTrendingRepos(queryParams)).resolves.toStrictEqual(expected);
     });
