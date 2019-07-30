@@ -41,6 +41,10 @@ describe("Trending.vue UI tests", () => {
         return this.wrapper.find("#search-button") as Wrapper<Trending>
       }
 
+      get backToSearchButton(): Wrapper<Trending> {
+        return this.wrapper.find(".back-button") as Wrapper<Trending>
+      }
+
       get loadingView(): Wrapper<Trending> {
         return this.wrapper.find("#trending-loading") as Wrapper<Trending>
       }
@@ -181,4 +185,63 @@ describe("Trending.vue UI tests", () => {
         expect(wrapper.errorView.exists()).toBe(false);
         expect(wrapper.reposList.exists()).toBe(true);
     })
+
+    it("expect to come back to search query view when back to search button is clicked on trending error view", async () => {
+      let mockWrapper = new TrendingControllerMockWrapper(
+        jest.fn().mockReturnValueOnce(Promise.resolve({
+          error: new Error("Internal Server Error"),
+        }))
+      );
+      setMocks(mockWrapper.getMock());
+  
+      const wrapper = new TrendingWrapper(
+        shallowMount(Trending, {
+          mocks: {
+            $Progress
+          }
+        }));
+      wrapper.wrapper.setData({kword: "java"});
+      wrapper.searchButton.trigger("click");
+      await flushpromises();
+
+      expect(wrapper.searchQueryView.exists()).toBe(false);
+      expect(wrapper.errorView.isVisible()).toBe(true);
+      wrapper.backToSearchButton.trigger("click");
+      
+      expect(wrapper.searchQueryView.isVisible()).toBe(true);
+      expect(wrapper.errorView.exists()).toBe(false);
+      
+    })
+
+    it("expect to come back to search query view when back to search button is clicked on trending list view", async () => {
+      let mockWrapper = new TrendingControllerMockWrapper(
+        jest.fn().mockReturnValueOnce(Promise.resolve({
+            repos: [testRepo],
+            no_of_pages: 1,
+        }))
+      );
+      setMocks(mockWrapper.getMock());
+  
+      const wrapper = new TrendingWrapper(
+        shallowMount(Trending, {
+          mocks: {
+            $Progress
+          }
+        }));
+      wrapper.wrapper.setData({kword: "java"});
+      wrapper.searchButton.trigger("click");
+      await flushpromises();
+
+      expect(wrapper.searchQueryView.exists()).toBe(false);
+      expect(wrapper.reposList.isVisible()).toBe(true);
+      wrapper.backToSearchButton.trigger("click");
+      
+      expect(wrapper.searchQueryView.isVisible()).toBe(true);
+      expect(wrapper.reposList.exists()).toBe(false);
+
+    })
+
+
+
+
 })

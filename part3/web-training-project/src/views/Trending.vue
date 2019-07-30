@@ -51,7 +51,7 @@
 
         //- Error display screen
         #trending-error.pv4.red(v-else-if=("loading==1"))
-            img.w2.h2.w3-ns.h3-ns.pointer(src="@/assets/back.png" v-on:click="backtoSearchPage")
+            img.w2.h2.w3-ns.h3-ns.pointer(class="back-button" src="@/assets/back.png" v-on:click="backtoSearchPage")
             p.f7.ma0 Back to Search
             p.red.center.w-60-ns {{loadingMessage.m1}}
 
@@ -63,7 +63,7 @@
             div.ma0.mt2
                 #icons.overflow-hidden
                     .fl
-                        img.w3.h3.pointer(src="@/assets/back.png" v-on:click="search = true")
+                        img.w3.h3.pointer(class="back-button" src="@/assets/back.png" v-on:click="search = true")
                     .fr
                         img.mt2.pt2.pointer(src="@/assets/ic_refresh.svg" v-on:click="getTrendingRepos") 
                 #text.overflow-hidden
