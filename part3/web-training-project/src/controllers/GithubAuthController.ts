@@ -1,5 +1,6 @@
-import GithubAuthRepository from "@/repositories/GithubAuthRepository"
-
+import "@/repositories/GithubAuthRepository";
+import GithubAuthRepository from "@/repositories/GithubAuthRepository";
+import { container, TYPE } from '@/repositories/Container';
 
 export default class GithubAuthController {
     constructor(private githubAuthRepository: GithubAuthRepository) {
@@ -27,3 +28,7 @@ export default class GithubAuthController {
         });
     }
 }
+
+container.bind<GithubAuthController>(TYPE.GithubAuthController).toFactory(() => 
+    new GithubAuthController(container.get(TYPE.GithubAuthRepository))
+);

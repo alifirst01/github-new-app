@@ -1,4 +1,6 @@
-import IssuesRepository from "@/repositories/IssuesRepository"
+import "@/repositories/IssuesRepository";
+import IssuesRepository from "@/repositories/IssuesRepository";
+import { container, TYPE } from '@/repositories/Container';
 
 
 export default class IssuesController {
@@ -27,3 +29,7 @@ export default class IssuesController {
         });
     }
 }
+
+container.bind<IssuesController>(TYPE.IssuesController).toFactory(() => 
+    new IssuesController(container.get(TYPE.IssuesRepository))
+);

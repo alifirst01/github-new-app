@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import store from "@/store";
+import { container, TYPE } from './Container';
 
 interface IssuesRepository{
     getAllIssues(): Promise<HttpNetworkRequestResult>;
@@ -95,3 +96,7 @@ export default class IssuesRepositoryImpl implements IssuesRepository {
         });
     }
 }
+
+container.bind<IssuesRepositoryImpl>(TYPE.IssuesRepository).toFactory(() => 
+    new IssuesRepositoryImpl(container.get(TYPE.AxiosInstance))
+);

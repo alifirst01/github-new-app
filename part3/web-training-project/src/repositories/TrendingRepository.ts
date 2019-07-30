@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios"
+import { container, TYPE } from './Container';
 
 interface TrendingRepository{
     getRepos(queryParams: SearchQueryParams): Promise<GetReposResult>;
@@ -9,7 +10,7 @@ export default class TrendingRepositoryImpl implements TrendingRepository {
     }
 
     /**
-     * Get the top starred Typescript public repositories in the past 24 hours.
+     * Get the top Typescript public repositories.
      */
     getRepos(queryParams: SearchQueryParams): Promise<HttpNetworkRequestResult> {
         var url = "https://api.github.com/search/repositories";
@@ -70,3 +71,7 @@ export default class TrendingRepositoryImpl implements TrendingRepository {
         });
     }
 }
+
+container.bind<TrendingRepositoryImpl>(TYPE.TrendingRepository).toFactory(() => 
+    new TrendingRepositoryImpl(container.get(TYPE.AxiosInstance))
+);

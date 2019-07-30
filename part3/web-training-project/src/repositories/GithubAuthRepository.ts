@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios"
+import { container, TYPE } from './Container';
 
 interface GithubAuthRepository {
     getAccessToken(accessCode: string): Promise<HttpNetworkRequestResult>;
@@ -42,3 +43,7 @@ export default class GithubAuthRepositoryImpl implements GithubAuthRepository {
 
     }
 }
+
+container.bind<GithubAuthRepositoryImpl>(TYPE.GithubAuthRepository).toFactory(() => 
+    new GithubAuthRepositoryImpl(container.get(TYPE.AxiosInstance))
+);

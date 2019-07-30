@@ -1,8 +1,9 @@
-import TrendingRepository from "@/repositories/TrendingRepository"
+import "@/repositories/TrendingRepository";
+import TrendingRepository from "@/repositories/TrendingRepository";
+import { container, TYPE } from '@/repositories/Container';
 
 export default class TrendingController {
-    constructor(private trendingRepository: TrendingRepository) {
-    }
+    constructor(private trendingRepository: TrendingRepository) {}
 
     async getTrendingRepos(queryParams: SearchQueryParams): Promise<GetReposResult> {
         return this.trendingRepository.getRepos(queryParams).then((networkResult: HttpNetworkRequestResult) => {
@@ -27,3 +28,7 @@ export default class TrendingController {
         });
     }
 }
+
+container.bind<TrendingController>(TYPE.TrendingController).toFactory(() => 
+    new TrendingController(container.get(TYPE.TrendingRepository))
+);
