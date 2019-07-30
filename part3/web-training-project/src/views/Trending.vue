@@ -7,14 +7,14 @@
         .w-90.w-60-m.w-50-l.h5.center.tl
             #search-bar.overflow-hidden
                 .w-80.fl.pv2.ph3-ns
-                    input.w-100.pa2.pa3-ns.ba.b--black-20.br3.outline-0(type="text" v-model="kword" @keyup.enter="addKeyWord" placeholder="Add keyword/s e.g. java")
+                    input#keyword-input.w-100.pa2.pa3-ns.ba.b--black-20.br3.outline-0(type="text" v-model="kword" @keyup.enter="addKeyWord" placeholder="Add keyword/s e.g. java")
                 .w-20.fr.pv2.pv0-ns.tl
-                    font-awesome-icon.w2.h2.w3-ns.h3-ns.grow.pointer(:icon="['fas', 'plus-square']" size="3x" @click="addKeyWord")
+                    font-awesome-icon.w2.h2.w3-ns.h3-ns.grow.pointer(id="add-keyword-button" :icon="['fas', 'plus-square']" size="3x" @click="addKeyWord")
             #keywords.tl
                 ul.pa0.pl3-ns
-                    li.dib.mr2.ph2.ba.b--black-20.br4(v-for="(kword, index) in queryParams.keywords")
+                    li.dib.mr2.ph2.ba.b--black-20.br4(class="keyword" v-for="(kword, index) in queryParams.keywords")
                         p.fl.mv1 {{ kword }}
-                        font-awesome-icon.pointer.fr.ml2.mv1(:icon="['fas', 'times-circle']" @click="queryParams.keywords.splice(index, 1)")
+                        font-awesome-icon.pointer.fr.ml2.mv1(class="remove-keyword-button" :icon="['fas', 'times-circle']" @click="queryParams.keywords.splice(index, 1)")
             #filters.ph3-ns.mt3
                 #sort-and-order-filter.overflow-hidden
                     #sort-filter.w-40.fl-ns
@@ -39,7 +39,7 @@
                         option(value=30) 1 month ago
                         option(value=90) 3 months ago
                         option(value=180) 6 months ago
-                button(v-on:click="handleSearchSubmit").f5.ph3.pv2.mt3.white.bg-black.b--black.br3.pointer Search
+                button(v-on:click="handleSearchSubmit")#search-button.f5.ph3.pv2.mt3.white.bg-black.b--black.br3.pointer Search
 
     //- Trending repositories query's result page
     #search-results.tl.mt4.w-70.w-60-m.w-50-l.center(v-else)
@@ -75,7 +75,7 @@
             //- List showing trending repos data
             .background.mt3.mb3(v-if="trendingRepos.length > 0")
                 ul.list.ph2
-                    repo-list-item(v-for="trepo in trendingRepos"
+                    repo-list-item#repo-item(v-for="trepo in trendingRepos"
                                       v-bind:repo="trepo")
                 //- Pagination component
                 paginate(v-model="queryParams.pageNum"
@@ -134,17 +134,17 @@
 </style>
 
 <script lang="ts">
-import { Component, Watch, Vue, Mixins } from "vue-property-decorator"
-import TrendingController from "@/controllers/TrendingController"
-import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
-import RepoListItem from "@/components/RepoListItem.vue"
-import DateMixin from "@/mixins/DateMixin"
-import axios from "axios"
+import { Component, Watch, Vue, Mixins } from "vue-property-decorator";
+import {container, TYPE, inject} from "@/repositories/Container";
+import "@/controllers/TrendingController";
+import TrendingController from "@/controllers/TrendingController";
+import RepoListItem from "@/components/RepoListItem.vue";
+import DateMixin from "@/mixins/DateMixin";
 
 @Component({
     name: "trending",
     components: {
-        RepoListItem,
+        RepoListItem,        
     }
 })
 export default class Trending extends Mixins(DateMixin) {
@@ -162,7 +162,9 @@ export default class Trending extends Mixins(DateMixin) {
         lastUpdated: new Date(),
         pageNum: 1,
     }
-    controller: TrendingController = new TrendingController(new TrendingRepositoryImpl(axios.create({})))
+
+    @inject(TYPE.TrendingController)
+    controller!: TrendingController;
 
     beforeDestroy() {
         clearInterval(this.timer);
@@ -235,4 +237,3 @@ export default class Trending extends Mixins(DateMixin) {
     }
 };
 </script>
-

@@ -30,16 +30,17 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
-import axios from "axios"
-import store from "@/store"
-import router from "@/router"
-import Component from "vue-class-component"
-import PulseLoader from "vue-spinner/src/PulseLoader.vue"
-import IssuesController from "@/controllers/IssuesController"
-import IssuesRepositoryImpl from "@/repositories/IssuesRepository"
-import GithubAuthController from "@/controllers/GithubAuthController"
-import GithubAuthRepositoryImpl from "@/repositories/GithubAuthRepository"
+import Vue from "vue";
+import axios from "axios";
+import store from "@/store";
+import router from "@/router";
+import Component from "vue-class-component";
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+import "@/controllers/IssuesController";
+import "@/controllers/GithubAuthController";
+import IssuesController from "@/controllers/IssuesController";
+import GithubAuthController from "@/controllers/GithubAuthController";
+import {container, TYPE, inject} from "@/repositories/Container";
 
 Component.registerHooks([
     'beforeRouteEnter',
@@ -55,8 +56,12 @@ export default class Issues extends Vue {
     issues: Issue[] = [];
     loading: number = 0;
     loadingMsg: Object = {};
-    issuesController: IssuesController = new IssuesController(new IssuesRepositoryImpl(axios.create({})))
-    githubAuthController: GithubAuthController = new GithubAuthController(new GithubAuthRepositoryImpl(axios.create({})))
+
+    @inject(TYPE.IssuesController)
+    issuesController!: IssuesController;
+
+    @inject(TYPE.GithubAuthController)
+    githubAuthController!: GithubAuthController;
 
     beforeRouteEnter(to: any, from: any, next: any) {
         var query = window.location.href;
