@@ -65,12 +65,12 @@
                     .fl
                         img.w3.h3.pointer(class="back-button" src="@/assets/back.png" v-on:click="search = true")
                     .fr
-                        img.mt2.pt2.pointer(src="@/assets/ic_refresh.svg" v-on:click="getTrendingRepos") 
+                        img.mt2.pt2.pointer(class="refresh-button" src="@/assets/ic_refresh.svg" v-on:click="getTrendingRepos") 
                 #text.overflow-hidden
                     .fl
                         p.f7.ma0 Back to Search
                     .fr
-                        p.f7.ma0 Last Updated: {{timeDiff}}
+                        p#last-updated-time.f7.ma0 Last Updated: {{timeDiff}}
             
             //- List showing trending repos data
             .background.mt3.mb3(v-if="trendingRepos.length > 0")

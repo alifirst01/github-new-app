@@ -1,9 +1,12 @@
 import { shallowMount, mount, Wrapper, WrapperArray } from "@vue/test-utils"
 import Trending from "@/views/Trending.vue"
-import TrendingController from '@/controllers/TrendingController';
 import { container, TYPE } from "@/repositories/Container";
 import flushpromises from "flush-promises";
 import TrendingControllerMockWrapper from '@/controllers/MockWrappers/TrendingControllerMockWrapper';
+import TrendingController from '@/controllers/TrendingController';
+
+
+const sinon = require('sinon');
 
 describe("Trending.vue UI tests", () => {
     class TrendingWrapper {
@@ -41,6 +44,10 @@ describe("Trending.vue UI tests", () => {
         return this.wrapper.find("#search-button") as Wrapper<Trending>
       }
 
+      get refreshButton(): Wrapper<Trending> {
+        return this.wrapper.find(".refresh-button") as Wrapper<Trending>
+      }
+
       get backToSearchButton(): Wrapper<Trending> {
         return this.wrapper.find(".back-button") as Wrapper<Trending>
       }
@@ -61,6 +68,9 @@ describe("Trending.vue UI tests", () => {
         return this.wrapper.findAll("#repo-item") as WrapperArray<Trending>
       }
 
+      get lastUpdatedTime(): Wrapper<Trending> {
+        return this.wrapper.find("#last-updated-time") as Wrapper<Trending>
+      }
     }
 
     const testRepo:Repo = {
@@ -210,7 +220,6 @@ describe("Trending.vue UI tests", () => {
       
       expect(wrapper.searchQueryView.isVisible()).toBe(true);
       expect(wrapper.errorView.exists()).toBe(false);
-      
     })
 
     it("expect to come back to search query view when back to search button is clicked on trending list view", async () => {
@@ -238,10 +247,94 @@ describe("Trending.vue UI tests", () => {
       
       expect(wrapper.searchQueryView.isVisible()).toBe(true);
       expect(wrapper.reposList.exists()).toBe(false);
-
     })
 
+    it("expect updateTimeDiff method of component to be called when lastUpdated data attribute changes", async () => {
+      const spy = sinon.spy();
+      const wrapper = new TrendingWrapper(
+        shallowMount(Trending, {
+          methods:{
+            updateTimeDiff: spy,
+          },
+        }));
+      wrapper.wrapper.setData({lastUpdated: new Date()});
+      expect(spy.callCount).toEqual(2);
+    })
 
+    it("expect updateTimeDiff method of component to be called when trendingRepo list is fetched", async () => {
+      let mockWrapper = new TrendingControllerMockWrapper(
+        jest.fn().mockReturnValueOnce(Promise.resolve({
+            repos: [testRepo],
+            no_of_pages: 1,
+        }))
+      );
+      setMocks(mockWrapper.getMock());
 
+      const spy = sinon.spy();
+      const wrapper = new TrendingWrapper(
+        shallowMount(Trending, {
+          methods:{
+            updateTimeDiff: spy,
+          },
+          mocks: {
+            $Progress
+          }
+        }));
+      wrapper.searchButton.trigger("click");
+      await flushpromises();
+      expect(spy.callCount).toEqual(2);
+    })
 
+    it.skip("expect last updated since to automatically call updateTimeDiff show '1 min ago' after 1 min has passed on trending list view", async () => {
+      let mockWrapper = new TrendingControllerMockWrapper(
+        jest.fn().mockReturnValueOnce(Promise.resolve({
+            repos: [testRepo],
+            no_of_pages: 1,
+        }))
+      );
+      setMocks(mockWrapper.getMock());
+
+      jest.useFakeTimers();
+      const wrapper = new TrendingWrapper(
+        shallowMount(Trending, {
+          mocks: {
+            $Progress
+          },
+        }));
+      
+      wrapper.searchButton.trigger("click");
+      await flushpromises();
+      console.log("time diff prev", wrapper.wrapper.vm.$data.timeDiff);
+      expect(wrapper.lastUpdatedTime.element.innerHTML).toEqual("Last Updated: now");
+      jest.runTimersToTime(90000);
+      console.log("time diff now", wrapper.wrapper.vm.$data.timeDiff);
+      expect(wrapper.lastUpdatedTime.element.innerHTML).toEqual("Last Updated: 1 min ago");
+      jest.useRealTimers();
+    })
+
+    it("expect to update trending list when refresh button is clicked", async () => {
+      let mockWrapper = new TrendingControllerMockWrapper(
+        jest.fn().mockReturnValueOnce(Promise.resolve({
+            repos: [testRepo],
+            no_of_pages: 1,
+        }))
+      );
+      setMocks(mockWrapper.getMock());
+
+      const wrapper = new TrendingWrapper(
+        shallowMount(Trending, {
+          mocks: {
+            $Progress
+          }
+        }));
+      const spy = sinon.spy(wrapper.wrapper.vm, "getTrendingRepos");
+      
+      wrapper.searchButton.trigger("click");
+      await flushpromises();
+      expect(wrapper.reposList.isVisible()).toBe(true);
+
+      wrapper.refreshButton.trigger("click");
+      expect(wrapper.loadingView.isVisible()).toBe(true);
+      expect(spy.callCount).toEqual(2);
+    })
 })
