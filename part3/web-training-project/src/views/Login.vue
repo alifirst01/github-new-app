@@ -1,10 +1,10 @@
 <template lang="pug">
-    .tl.mt4.w-70.w-40-ns.center
+    #login-view.tl.mt4.w-70.w-40-ns.center
         h1.f2.f1-ns Login to Github
         h3.ma0.mt3.f4.f3-ns In order to view issues for your GitHub account, you must login to your GitHub account.
         
         .tc.mt4.mt5-ns
-            button(v-on:click="redirectgithubLogin").f5.ph2.pv2.white.bg-black.b--black.br3.pointer Login to GitHub
+            button(v-on:click="redirectgithubLogin")#github-login.f5.ph2.pv2.white.bg-black.b--black.br3.pointer Login to GitHub
         .mt4.mt5-ns.w-90.w-70-ns.tl.center
             p.f6.f5-ns We do not store or share your personal information. We ask the minimum permissions required for the application to work.
 </template>
@@ -23,7 +23,7 @@ export default class Login extends Vue {
         }
         var queryString = Object.keys(params).map(key => key + '=' + params[key]).join('&');
         var redirectUrl = "https://github.com/login/oauth/authorize?" + queryString;
-        window.location.href = redirectUrl;
+        window.location.assign(redirectUrl);
     }
 }
 

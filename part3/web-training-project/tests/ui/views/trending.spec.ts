@@ -1,4 +1,4 @@
-import { shallowMount, mount, Wrapper, WrapperArray } from "@vue/test-utils"
+import { shallowMount, Wrapper, WrapperArray } from "@vue/test-utils"
 import Trending from "@/views/Trending.vue"
 import { container, TYPE } from "@/repositories/Container";
 import flushpromises from "flush-promises";

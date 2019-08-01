@@ -1,5 +1,5 @@
 <template lang="pug">
-    li.w-100.cf
+    li#repo-item.w-100.cf
         .fl.w-10.pv3.dn.db-ns
             img.br4-l.w2-m.h2-m.w3-l.h3-l(v-bind:src="repo.avatarUrl")
         .fr-ns.w-90-ns.pv2.pv3-ns.pl1.pl3-ns
