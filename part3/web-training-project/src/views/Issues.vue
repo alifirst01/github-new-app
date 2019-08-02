@@ -1,11 +1,11 @@
 <template lang="pug">
-    #login-loading.w-70.w-40-ns.center.pv6.tl(v-if="loading==0")
+    #token-fetch-loading.w-70.w-40-ns.center.pv6.tl(v-if="loading==0")
         h1.f4.f3-ns {{loadingMsg.m1}}
         h3.f5.f4-ns(v-if="'m2' in loadingMsg") {{loadingMsg.m2}}
     
     #issues-content(v-else)
-        #logout-button.fr.pv3.ph4
-            h3-link.f4.f3-ns.pointer(v-on:click="logout") Logout 
+        .fr.pv3.ph4
+            h3-link#logout.f4.f3-ns.pointer(v-on:click="logout") Logout 
         br
         .tl.mt4.w-70.w-50-m.w-40-l.center
             h1.f2.f1-ns Github Issues
@@ -15,12 +15,12 @@
                 img.pointer(src="@/assets/ic_refresh.svg" v-on:click="getAllUserIssues")
 
             #issues-loading.pv3.tc(v-if="loading == 2")
-                pulse-loader(:loading="loading == 2" :color="color" :size="size")
+                //- pulse-loader(:loading="loading == 2" :color="color" :size="size")
                 h1.f5.f4-ns {{loadingMsg.m1}}
                 h3.f6.f5-ns(v-if="'m2' in loadingMsg") {{loadingMsg.m2}}
             #issues-error.pv2.red(v-else-if=("loading == 3"))
                 p.red.tc {{loadingMsg.m1}}
-            #issues-main-content(v-else)
+            #issues-list(v-else)
                 div.background.mt3(v-if="issues.length > 0")
                     ul.list.ph3
                         li(v-for="issue in issues")
@@ -35,7 +35,7 @@ import axios from "axios";
 import store from "@/store";
 import router from "@/router";
 import Component from "vue-class-component";
-import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+// import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 import "@/controllers/IssuesController";
 import "@/controllers/GithubAuthController";
 import IssuesController from "@/controllers/IssuesController";
@@ -49,7 +49,7 @@ Component.registerHooks([
 @Component({
     name: "issues",
     components: {
-        PulseLoader,
+        // PulseLoader,
     }
 })
 export default class Issues extends Vue { 
@@ -90,7 +90,6 @@ export default class Issues extends Vue {
         this.loading = 0;
         this.loadingMsg = {m1: "Finishing GitHub login", m2: "It should only be a second or two…"};
         this.$Progress.start();
-
         return await this.githubAuthController.getGithubAccessToken(accessCode)
         .then((tokenResult: GetGithubAuthResult) => {
             if (tokenResult.error){

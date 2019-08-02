@@ -71,7 +71,7 @@ describe("Trending.vue UI tests", () => {
       get lastUpdatedTime(): Wrapper<Trending> {
         return this.wrapper.find("#last-updated-time") as Wrapper<Trending>
       }
-    }
+    };
 
     const testRepo:Repo = {
       name: "foo", 
@@ -86,13 +86,13 @@ describe("Trending.vue UI tests", () => {
         container
           .rebind<TrendingController>(TYPE.TrendingController)
           .toValue(trendingControllerMock);
-    } 
+    };
 
     const $Progress = {
       start: jest.fn().mockReturnValue(null),
       fail: jest.fn().mockReturnValue(null),
       finish: jest.fn().mockReturnValue(null),
-    }
+    };
 
     it("expect to see a search query view when starting up view", async () => {
         const wrapper = new TrendingWrapper(shallowMount(Trending));
@@ -126,7 +126,7 @@ describe("Trending.vue UI tests", () => {
         wrapper.sortByOptions.findAll('option').at(1).element.setAttribute('selected', "true");
         wrapper.sortByOptions.trigger('change');
         expect(wrapper.orderBySelector.isVisible()).toBe(true);
-    })
+    });
 
     it("expect to see a loading view when search button is clicked", async () => {
       let mockWrapper = new TrendingControllerMockWrapper(
@@ -147,7 +147,7 @@ describe("Trending.vue UI tests", () => {
       expect(wrapper.loadingView.isVisible()).toBe(true);
       expect(wrapper.errorView.exists()).toBe(false);
       expect(wrapper.reposList.exists()).toBe(false);
-    })
+    });
 
     it("expect to see a error view when search button is clicked and error is returned", async () => {
       let mockWrapper = new TrendingControllerMockWrapper(
@@ -170,7 +170,7 @@ describe("Trending.vue UI tests", () => {
       expect(wrapper.loadingView.exists()).toBe(false);
       expect(wrapper.errorView.exists()).toBe(true);
       expect(wrapper.reposList.exists()).toBe(false);
-    })
+    });
 
     it("expect to see a trending list view when search button is clicked and list of repositories is returned", async () => {
         let mockWrapper = new TrendingControllerMockWrapper(
@@ -194,7 +194,7 @@ describe("Trending.vue UI tests", () => {
         expect(wrapper.loadingView.exists()).toBe(false);
         expect(wrapper.errorView.exists()).toBe(false);
         expect(wrapper.reposList.exists()).toBe(true);
-    })
+    });
 
     it("expect to come back to search query view when back to search button is clicked on trending error view", async () => {
       let mockWrapper = new TrendingControllerMockWrapper(
@@ -220,7 +220,7 @@ describe("Trending.vue UI tests", () => {
       
       expect(wrapper.searchQueryView.isVisible()).toBe(true);
       expect(wrapper.errorView.exists()).toBe(false);
-    })
+    });
 
     it("expect to come back to search query view when back to search button is clicked on trending list view", async () => {
       let mockWrapper = new TrendingControllerMockWrapper(
@@ -247,7 +247,7 @@ describe("Trending.vue UI tests", () => {
       
       expect(wrapper.searchQueryView.isVisible()).toBe(true);
       expect(wrapper.reposList.exists()).toBe(false);
-    })
+    });
 
     it("expect updateTimeDiff method of component to be called when lastUpdated data attribute changes", async () => {
       const spy = sinon.spy();
@@ -259,7 +259,7 @@ describe("Trending.vue UI tests", () => {
         }));
       wrapper.wrapper.setData({lastUpdated: new Date()});
       expect(spy.callCount).toEqual(2);
-    })
+    });
 
     it("expect updateTimeDiff method of component to be called when trendingRepo list is fetched", async () => {
       let mockWrapper = new TrendingControllerMockWrapper(
@@ -283,7 +283,7 @@ describe("Trending.vue UI tests", () => {
       wrapper.searchButton.trigger("click");
       await flushpromises();
       expect(spy.callCount).toEqual(2);
-    })
+    });
 
     it.skip("expect last updated since to automatically call updateTimeDiff show '1 min ago' after 1 min has passed on trending list view", async () => {
       let mockWrapper = new TrendingControllerMockWrapper(
@@ -310,7 +310,7 @@ describe("Trending.vue UI tests", () => {
       console.log("time diff now", wrapper.wrapper.vm.$data.timeDiff);
       expect(wrapper.lastUpdatedTime.element.innerHTML).toEqual("Last Updated: 1 min ago");
       jest.useRealTimers();
-    })
+    });
 
     it("expect to update trending list when refresh button is clicked", async () => {
       let mockWrapper = new TrendingControllerMockWrapper(
@@ -336,5 +336,5 @@ describe("Trending.vue UI tests", () => {
       wrapper.refreshButton.trigger("click");
       expect(wrapper.loadingView.isVisible()).toBe(true);
       expect(spy.callCount).toEqual(2);
-    })
+    });
 })
