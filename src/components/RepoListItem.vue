@@ -14,9 +14,8 @@
 <script lang="ts">
 import Vue from "vue";
 
-export default Vue.extend ({
-    name: 'RepoListItem',
-    props: ['repo'],
-
+export default Vue.extend({
+  name: "RepoListItem",
+  props: ["repo"]
 });
 </script>

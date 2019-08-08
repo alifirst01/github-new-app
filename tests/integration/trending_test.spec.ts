@@ -1,6 +1,6 @@
-import TrendingRepository from "@/repositories/TrendingRepository"
-import TrendingController from "@/controllers/TrendingController"
-import TrendingRepositoryImpl from "@/repositories/TrendingRepository"
+import TrendingRepository from "../../src/repositories/TrendingRepository"
+import TrendingController from "../../src/controllers/TrendingController"
+import TrendingRepositoryImpl from "../../src/repositories/TrendingRepository"
 
 var axios = require("axios");
 var MockAdapter = require("axios-mock-adapter");

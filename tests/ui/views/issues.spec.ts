@@ -1,4 +1,4 @@
-import { shallowMount, Wrapper, WrapperArray, mount, createLocalVue } from "@vue/test-utils"
+import { shallowMount, Wrapper, mount, createLocalVue } from "@vue/test-utils"
 import VueRouter from 'vue-router'
 import Issues from "@/views/Issues.vue"
 import { container, TYPE } from "@/repositories/Container";

@@ -98,142 +98,146 @@
 </template>
 
 <style lang="sass">
-    .pagination
-        text-align: center
-        padding: 0
-    
-    .page-item
-        display: inline-block
-    
-    .page-item-disabled
-        a
-            color: #8c8c8c
-            cursor: default
-            background-color: white
+.pagination
+    text-align: center
+    padding: 0
 
-    .page-item-active
-        margin: 0
-        padding: 7px 0px 7px
-        color: #fff
+.page-item
+    display: inline-block
+
+.page-item-disabled
+    a
+        color: #8c8c8c
         cursor: default
-        background-color: #151515
-        border-color: #242424
-        border-radius: 3px
+        background-color: white
 
-    .page-item-link
-        border-radius: 3px
-        padding: 7px 12px 7px
-        border: 1px solid lightGray
-        text-decoration: none
+.page-item-active
+    margin: 0
+    padding: 7px 0px 7px
+    color: #fff
+    cursor: default
+    background-color: #151515
+    border-color: #242424
+    border-radius: 3px
 
-    .page-item-link:focus
-        outline: 0
-        -moz-outline-style: none
-    
+.page-item-link
+    border-radius: 3px
+    padding: 7px 12px 7px
+    border: 1px solid lightGray
+    text-decoration: none
 
+.page-item-link:focus
+    outline: 0
+    -moz-outline-style: none
 </style>
 
 <script lang="ts">
-import { Component, Watch, Vue, Mixins } from "vue-property-decorator";
-import {container, TYPE, inject} from "@/repositories/Container";
+import { Component, Watch, Mixins } from "vue-property-decorator";
+import { TYPE, inject } from "@/repositories/Container";
 import "@/controllers/TrendingController";
 import TrendingController from "@/controllers/TrendingController";
 import RepoListItem from "@/components/RepoListItem.vue";
 import DateMixin from "@/mixins/DateMixin";
 
 @Component({
-    name: "trending",
-    components: {
-        RepoListItem,        
-    }
+  name: "trending",
+  components: {
+    RepoListItem
+  }
 })
 export default class Trending extends Mixins(DateMixin) {
-    timer: any = ""
-    kword: string = ""
-    loading: number = 0                 // 0 -> loading tag, 1 -> Error message tag, 2 -> List of trending repositories tag
-    search: boolean = true              // true -> Trending search page,  false -> Trending repositories page
-    noOfPages: number = 0
-    loadingMessage: Object = {}
-    trendingRepos: Array<Repo> = []
-    queryParams: SearchQueryParams = {
-        keywords: [],
-        orderBy: "",
-        sortBy: "",
-        lastUpdated: new Date(),
-        pageNum: 1,
-    }
+  timer: any = "";
+  kword: string = "";
+  loading: number = 0; // 0 -> loading tag, 1 -> Error message tag, 2 -> List of trending repositories tag
+  search: boolean = true; // true -> Trending search page,  false -> Trending repositories page
+  noOfPages: number = 0;
+  loadingMessage: Object = {};
+  trendingRepos: Array<Repo> = [];
+  queryParams: SearchQueryParams = {
+    keywords: [],
+    orderBy: "",
+    sortBy: "",
+    lastUpdated: new Date(),
+    pageNum: 1
+  };
 
-    @inject(TYPE.TrendingController)
-    controller!: TrendingController;
+  @inject(TYPE.TrendingController)
+  controller!: TrendingController;
 
-    beforeDestroy() {
-        clearInterval(this.timer);
-    }
+  beforeDestroy() {
+    clearInterval(this.timer);
+  }
 
-    /**
-     * Call updateTimeDiff everytime lastUpdate attribute changes
-     */
-    @Watch('lastUpdated', { immediate: true })                 
-    onChange(val: any, oldVal: any){ this.updateTimeDiff() }
+  /**
+   * Call updateTimeDiff everytime lastUpdate attribute changes
+   */
+  @Watch("lastUpdated", { immediate: true })
+  onChange(val: any, oldVal: any) {
+    this.updateTimeDiff();
+  }
 
-    /**
-     * Add input keyword to the list of keywords
-     */
-    addKeyWord(){
-        var word = this.kword.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ");     // Removing all punctuations from the keyword
-        if (word.length != 0 && !(this.queryParams.keywords.includes(word.toLowerCase())))
-            this.queryParams.keywords.push(word.toLowerCase());
-        this.kword = "";
-    }
+  /**
+   * Add input keyword to the list of keywords
+   */
+  addKeyWord() {
+    var word = this.kword.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " "); // Removing all punctuations from the keyword
+    if (
+      word.length != 0 &&
+      !this.queryParams.keywords.includes(word.toLowerCase())
+    )
+      this.queryParams.keywords.push(word.toLowerCase());
+    this.kword = "";
+  }
 
-    /**
-     * Update the lastUpdated parameter in queryParams object
-     */
-    set queryLastUpdated(days: number){
-        this.queryParams.lastUpdated = new Date()
-        this.queryParams.lastUpdated.setDate(this.queryParams.lastUpdated.getDate() - days)
-    }
+  /**
+   * Update the lastUpdated parameter in queryParams object
+   */
+  set queryLastUpdated(days: number) {
+    this.queryParams.lastUpdated = new Date();
+    this.queryParams.lastUpdated.setDate(
+      this.queryParams.lastUpdated.getDate() - days
+    );
+  }
 
-    handlePaginationCallback(pageNum: number){
-        this.queryParams.pageNum = pageNum;
-        this.getTrendingRepos();
-    }
+  handlePaginationCallback(pageNum: number) {
+    this.queryParams.pageNum = pageNum;
+    this.getTrendingRepos();
+  }
 
-    backtoSearchPage(){
-        clearInterval(this.timer);
-        this.search = true;
-    }
+  backtoSearchPage() {
+    clearInterval(this.timer);
+    this.search = true;
+  }
 
-    handleSearchSubmit(){
-        this.getTrendingRepos();
-        this.timer = setInterval(this.updateTimeDiff, 65000);
-    }
+  handleSearchSubmit() {
+    this.getTrendingRepos();
+    this.timer = setInterval(this.updateTimeDiff, 65000);
+  }
 
-    /**
-     * Get the list of trending repositories with given query parameters
-     */
-    async getTrendingRepos(): Promise<void> {
-        this.addKeyWord();          // Add keyword in case user forgot to press + button before search 
-        this.loading = 0;          
-        this.search = false;     
-        this.loadingMessage = {m1: "Fetching Trending Repositories"};
-        this.$Progress.start();
-        return await this.controller.getTrendingRepos(this.queryParams).then((reposResult: GetReposResult) => {
-            if (reposResult.error){
-                this.loading = 1;
-                this.loadingMessage = {m1: reposResult.error.message};
-                this.$Progress.fail();
-            }
-            else{
-                this.trendingRepos = reposResult.repos!;
-                if(this.noOfPages == 0)
-                    this.noOfPages = reposResult.no_of_pages!;
-                this.loading = 2;
-                this.$Progress.finish();
-                this.lastUpdated = new Date();
-            }
-        });
-        
-    }
-};
+  /**
+   * Get the list of trending repositories with given query parameters
+   */
+  async getTrendingRepos(): Promise<void> {
+    this.addKeyWord(); // Add keyword in case user forgot to press + button before search
+    this.loading = 0;
+    this.search = false;
+    this.loadingMessage = { m1: "Fetching Trending Repositories" };
+    this.$Progress.start();
+    return await this.controller
+      .getTrendingRepos(this.queryParams)
+      .then((reposResult: GetReposResult) => {
+        if (reposResult.error) {
+          this.loading = 1;
+          this.loadingMessage = { m1: reposResult.error.message };
+          this.$Progress.fail();
+        } else {
+          this.trendingRepos = reposResult.repos!;
+          if (this.noOfPages == 0) this.noOfPages = reposResult.no_of_pages!;
+          this.loading = 2;
+          this.$Progress.finish();
+          this.lastUpdated = new Date();
+        }
+      });
+  }
+}
 </script>
